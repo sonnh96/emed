@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+{% block content %}
+  <style type="text/css">
+    table tr td {
+      padding: 10px 15px;
+    }
+
+    .col-ls-6 {
+      width: 50%;
+    }
+  </style>
+  <div id="upload" class="content">
+    <div class="container">
+      <div class="card">
+        <div id="upload-content" class="card-body">
+          <div class="preview__container">
+            <div class="header row" style="font-weight: bold; color: #086799; text-align: center">
+              <div class="row" style="margin: auto">
+                <div class="col-md-6 col-ls-6">
+                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="openUpload()">
+                    <i class="material-icons">add_circle_outline</i>
+                    <span>ADD</span>
+                  </button>
+                </div>
+                <div class="col-md-6 col-ls-6">
+                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color"
+                          v-on:click="submitFiles()">
+                    <img src="static/imgs/upload.png" alt="">
+                    <span>UPLOAD</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="margin-top: 30px">
+              <div class="form-group" style="margin: auto">
+                <label style="font-size: 16px !important; margin-bottom: 10px">Pill name</label>
+                <input id="item-name" type="text" class="form-control form-inline" v-model="name">
+              </div>
+            </div>
+            <div v-if="list.length > 0" class="preview__content">
+              <div v-for="f, id in list" class="row" style="margin-bottom: 20px">
+                <div class="col-md-4 col-sm-6">
+                  <img class="preview__img" :src="f.url" :alt="f.file.name"
+                       onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <input v-model="f.label" class="form-control form-inline" style="width: 100%">
+                </div>
+                <div class="col-md-4 col-sm-6">
+                  <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px"
+                          @click="deleteImg(id)">
+                    <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="upload-item" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                  <span aria-hidden="true">×</span>
+                  <span class="sr-only">Close</span>
+                </button>
+              </div>
+              <div class="row">
+                <div class="form-group" style="margin: auto">
+                  <label>Label</label>
+                  <input id="item-name" type="text" class="form-control form-inline" :class="error ? 'is-invalid' : ''" v-model="label">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12" style="text-align: center">
+                  <h2 style="font-weight: bold; color: #086799">横カメラ</h2>
+                  <div v-if="file && file != null" class="preview__content">
+                    <table style="width: 80%; margin: auto;">
+                      <tr>
+                        <td>
+                          <img class="preview__img" :src="file.url" :alt="file.file.name"
+                               onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px"
+                                  @click="deleteImg()">
+                            <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
+                          </button>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div v-else id="upload-content" class="card-body" @drop.prevent="fileDropHover"
+                       @dragover.prevent="fileDragHover" @dragleave.prevent="fileDragHover">
+                    <div class="upload__content">
+                      <div href="#">
+                        <img src="{{ url_for('static', filename='imgs/shap6.png') }}" alt=""/>
+                      </div>
+                      <h2 class="upload__title">
+                        帳票などファイルをドロップする
+                      </h2>
+                      <h2 class="upload__subtitle">
+                        または
+                      </h2>
+                      <div class="upload__icon" style="cursor: pointer" v-on:click="selectFile()">
+                        <img src="{{ url_for('static', filename='imgs/combine.png') }}" alt=""/>
+                      </div>
+                      <input type="file" id="files" ref="files" v-on:change="handleFilesUpload($event)" hidden accept="image/*"/>
+                      <div class="upload__description text-center">
+                        <span class="modified">PDF・JPEG・JPG・PNG</span>
+                        <div class="flex justify-content-center align-items-center">
+                          <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                              <span class="text-center">複数の画像をアップロード可能 20MB 以内</span>
+                            </div>
+                            <div class="col-md-2"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer" style="justify-content: center !important;">
+              <button class="btn btn-success" @click="addItem()" style="font-size: 16px">ADD</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/js/upload.js?v=15"></script>
+{% endblock content %}
