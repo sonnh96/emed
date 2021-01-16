@@ -8,7 +8,8 @@ from main import db
 
 
 class Pill(db.Model):
-    pill_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    pill_id = db.Column(db.String(45), nullable=True)
     name = db.Column(db.String(45), nullable=False)
     active_ingredient = db.Column(db.String(200), nullable=True)
     content = db.Column(db.String(200), nullable=True)
@@ -24,17 +25,17 @@ class Pill(db.Model):
     warning = db.Column(db.String(200), nullable=True)
     side_effect = db.Column(db.String(200), nullable=True)
     price = db.Column(db.String(200), nullable=True)
-    images = db.relationship('PillImages')
+    images = db.relationship('PillImages', backref="pill", lazy=True)
 
     def __repr__(self):
-        return f"Pill('{self.pill_id}', '{self.name}', '{self.active_ingredient}', '{self.content}', '{self.images}'," \
+        return f"Pill('{self.id}', '{self.pill_id}', '{self.name}', '{self.active_ingredient}', '{self.content}', '{self.images}'," \
             f"'{self.license}', '{self.packaging}', '{self.unit}', '{self.color}', '{self.shape}', '{self.link_images}'," \
-            f"'{self.benefit}', '{self.dosage}', '{self.contraindication}', '{self.warning}', '{self.side_effect}', '{self.price}',)"
+            f"'{self.benefit}', '{self.dosage}', '{self.contraindication}', '{self.warning}', '{self.side_effect}', '{self.price}')"
 
 
 class PillImages(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    pill_id = db.Column(db.String(20), db.ForeignKey('pill.pill_id'), nullable=False)
+    pill_id = db.Column(db.String(20), db.ForeignKey('pill.id'), nullable=False)
     label = db.Column(db.String(200), nullable=True)
     image_url = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

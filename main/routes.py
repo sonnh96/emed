@@ -40,7 +40,31 @@ def token_required(f):
 
 @app.route("/")
 def home():
-    return render_template('upload.html', title='Upload')
+    pills = Pill.query
+    if 'search' in request.args:
+        search = request.args['search']
+        pills = pills.filter(Pill.name.like("%{}%".format(search)))
+
+    total = pills.count()
+    if 'page' in request.args:
+        page = int(request.args['page'])
+        pills = pills.paginate(page,10,error_out=False).items
+    else:
+        pills = pills.limit(10).all()
+
+    res = {
+        'data': [],
+        'total': total
+    }
+    for pill in pills:
+        res['data'].append({
+            'id': pill.id,
+            'pill_id': pill.pill_id,
+            'name': pill.name,
+            'images': [img.image_url for img in pill.images]
+        })
+
+    return render_template('history.html', title='Login', data=res)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -57,36 +81,48 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
-@app.route("/history", methods=['GET', 'POST'])
-def history():
-    pills = Pill.query.join(PillImages).all()
-    data = []
-    for pill in pills:
-        data.append({
-            'id': pill.pill_id,
-            'name': pill.name,
-            'images': [img.image_url for img in pill.images]
-        })
-    return render_template('history.html', title='Login', data=data)
-
-
 @app.route("/upload", methods=['GET', 'POST'])
 def upload():
+    data = None
     if request.method == 'POST':
-        if 'pill_name' in request.form:
+        if 'id' in request.form:
+            id = request.form['id']
+            pill = Pill.query.filter_by(id=id).first()
+        elif 'pill_name' in request.form:
             pill = Pill(name=request.form['pill_name'])
             db.session.add(pill)
             db.session.commit()
+        if pill != None:
             img_data = request.files.getlist('img_data[]')
+            print(img_data)
             for i, file in enumerate(img_data):
                 label = request.form['label_' + str(i)]
-                try:
-                    path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
-                    file.save(os.path.join(UPLOAD_DIR, path))
-                    pill_image = PillImages(pill_id=pill.pill_id, label=label, image_url=path)
-                    db.session.add(pill_image)
-                    db.session.commit()
-                except Exception as e:
-                    print(e)
+                status = int(request.form['status_' + str(i)])
+                if status == 1:
+                    try:
+                        path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
+                        file.save(os.path.join(UPLOAD_DIR, path))
+                        pill_image = PillImages(pill_id=pill.id, label=label, image_url=path)
+                        db.session.add(pill_image)
+                        db.session.commit()
+                    except Exception as e:
+                        print(e)
+                elif status == 2:
+                    id = int(request.form['id_' + str(i)])
+                    try:
+                        PillImages.query.filter_by(id=id).delete()
+                        db.session.commit()
+                    except Exception as e:
+                        print(e)
             return jsonify({'mess': 'success'})
-    return render_template('upload.html', title='Upload')
+    else:
+        if 'id' in request.args:
+            id = request.args['id']
+            pill = Pill.query.filter_by(id=id).first()
+            data = {
+                'id': pill.id,
+                'pill_id': pill.pill_id,
+                'name': pill.name,
+                'images': [{'id': img.id, 'url': '/static/uploaded/' + img.image_url, 'label': img.label} for img in pill.images]
+            }
+    return render_template('upload.html', title='Upload', data=data)

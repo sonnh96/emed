@@ -9,6 +9,9 @@
       width: 50%;
     }
   </style>
+  <script>
+    var localData = {{ data | tojson }};
+  </script>
   <div id="upload" class="content">
     <div class="container">
       <div class="card">
@@ -33,14 +36,14 @@
             </div>
             <div class="row" style="margin-top: 30px">
               <div class="form-group" style="margin: auto">
-                <label style="font-size: 16px !important; margin-bottom: 10px">Pill name</label>
+                <label style="font-size: 16px !important; margin-bottom: 10px">Pill Name</label>
                 <input id="item-name" type="text" class="form-control form-inline" v-model="name">
               </div>
             </div>
             <div v-if="list.length > 0" class="preview__content">
-              <div v-for="f, id in list" class="row" style="margin-bottom: 20px">
+              <div v-for="f, id in list" v-if="f.status && f.status != 2" class="row" style="margin-bottom: 20px">
                 <div class="col-md-4 col-sm-6">
-                  <img class="preview__img" :src="f.url" :alt="f.file.name"
+                  <img class="preview__img" :src="f.url"
                        onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
                 </div>
                 <div class="col-md-4 col-sm-6">
@@ -75,7 +78,6 @@
               </div>
               <div class="row">
                 <div class="col-md-12" style="text-align: center">
-                  <h2 style="font-weight: bold; color: #086799">横カメラ</h2>
                   <div v-if="file && file != null" class="preview__content">
                     <table style="width: 80%; margin: auto;">
                       <tr>
