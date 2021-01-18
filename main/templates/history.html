@@ -68,6 +68,10 @@
       padding: 4px;
     }
 
+    .ui-menu-item {
+      font-size: 14px;
+      padding: 5px;
+    }
     @-webkit-keyframes candystripe {
       to {
         background-position: 20px 0;
@@ -99,7 +103,7 @@
               <div class="col-md-3 dropdown"></div>
               <div class="col-md-3"></div>
               <div class="search col-md-6">
-                <input type="text" name="q" class="searchbox" placeholder="Search" style="width: 100%" v-model="search">
+                <input id="tags" type="text" name="q" class="searchbox" placeholder="Search" style="width: 100%" v-model="search" v-on:keyup="hint">
                 <button type="submit" class="searchbtn" v-on:click="searchData()"><i class="fas fa-search"></i></button>
               </div>
             </div>

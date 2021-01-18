@@ -10,7 +10,8 @@ myObject = new Vue({
     pageSize: 10,
     pageCount: 0,
     socket: null,
-    search: null
+    search: null,
+    filter: []
   },
   beforeMount: function () {
     this.data = localData['data'];
@@ -36,6 +37,28 @@ myObject = new Vue({
     },
     select() {
       this.allSelected = false;
+    },
+    hint() {
+      let data = {'name': this.search};
+      var self = this;
+      $.ajax({
+        url: "/search",
+        type: "POST",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        success: function (e) {
+          // $('body').removeClass("loading");
+          $( "#tags" ).autocomplete({
+            source: e.data.map(d => d.name),
+            select: function( event, ui ) {
+              self.search = ui.item.value
+              self.reloadData()
+            }
+          });
+        }, error: function () {
+          // $('body').removeClass("loading");
+        }
+      });
     },
     reloadData() {
       window.location.replace('/?search='+(this.search != null ? this.search : '')+'&page='+this.pageNo);
