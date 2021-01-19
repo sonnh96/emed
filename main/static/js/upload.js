@@ -26,8 +26,8 @@ myObject = new Vue({
     }
   },
   mounted: function () {
-    this.openUpload();
     this.selectFile();
+    $('#add').click();
   },
   methods: {
     selectFile() {
