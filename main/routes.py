@@ -111,7 +111,6 @@ def upload():
             db.session.commit()
         if pill != None:
             img_data = request.files.getlist('img_data[]')
-            print(img_data)
             for i, file in enumerate(img_data):
                 label = request.form['label_' + str(i)]
                 status = int(request.form['status_' + str(i)])

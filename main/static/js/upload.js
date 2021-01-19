@@ -76,6 +76,13 @@ myObject = new Vue({
         'url': URL.createObjectURL(files[0]),
         'name': files[0].name
       };
+      if (this.file != null) {
+        this.file['label'] = this.label;
+        this.file['status'] = 1;
+        this.list.push(this.file);
+        this.file = null;
+        this.label = null;
+      }
     },
     clear() {
       this.list = [];
@@ -105,7 +112,7 @@ myObject = new Vue({
         formData.append("pill_name", this.name);
         for (let i in this.list) {
           formData.append("img_data[]", this.list[i].file ? this.list[i].file : new File([""], "test"));
-          formData.append("label_" + i, this.list[i].label);
+          formData.append("label_" + i, this.list[i].label != null ? this.list[i].label : '');
           formData.append("status_" + i, this.list[i].status);
           formData.append("id_" + i, this.list[i].id);
         }

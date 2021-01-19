@@ -16,11 +16,12 @@
     <div class="container">
       <div class="card">
         <div id="upload-content" class="card-body">
+          <input type="file" id="files" ref="files" v-on:change="handleFilesUpload($event)" hidden accept="image/*"/>
           <div class="preview__container">
             <div class="header row" style="font-weight: bold; color: #086799; text-align: center">
               <div class="row" style="margin: auto">
                 <div class="col-md-6 col-ls-6">
-                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="openUpload()">
+                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="selectFile()">
                     <i class="material-icons">add_circle_outline</i>
                     <span>ADD</span>
                   </button>
@@ -60,81 +61,8 @@
           </div>
         </div>
       </div>
-      <div class="modal fade" id="upload-item" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                  <span aria-hidden="true">×</span>
-                  <span class="sr-only">Close</span>
-                </button>
-              </div>
-              <div class="row">
-                <div class="form-group" style="margin: auto">
-                  <label>Label</label>
-                  <input id="item-name" type="text" class="form-control form-inline" :class="error ? 'is-invalid' : ''" v-model="label">
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12" style="text-align: center">
-                  <div v-if="file && file != null" class="preview__content">
-                    <table style="width: 80%; margin: auto;">
-                      <tr>
-                        <td>
-                          <img class="preview__img" :src="file.url" :alt="file.file.name"
-                               onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
-                        </td>
-                        <td>
-                          <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px"
-                                  @click="deleteImg()">
-                            <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
-                          </button>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div v-else id="upload-content" class="card-body" @drop.prevent="fileDropHover"
-                       @dragover.prevent="fileDragHover" @dragleave.prevent="fileDragHover">
-                    <div class="upload__content">
-                      <div href="#">
-                        <img src="{{ url_for('static', filename='imgs/shap6.png') }}" alt=""/>
-                      </div>
-                      <h2 class="upload__title">
-                        帳票などファイルをドロップする
-                      </h2>
-                      <h2 class="upload__subtitle">
-                        または
-                      </h2>
-                      <div class="upload__icon" style="cursor: pointer" v-on:click="selectFile()">
-                        <img src="{{ url_for('static', filename='imgs/combine.png') }}" alt=""/>
-                      </div>
-                      <input type="file" id="files" ref="files" v-on:change="handleFilesUpload($event)" hidden accept="image/*"/>
-                      <div class="upload__description text-center">
-                        <span class="modified">PDF・JPEG・JPG・PNG</span>
-                        <div class="flex justify-content-center align-items-center">
-                          <div class="row">
-                            <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                              <span class="text-center">複数の画像をアップロード可能 20MB 以内</span>
-                            </div>
-                            <div class="col-md-2"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer" style="justify-content: center !important;">
-              <button class="btn btn-success" @click="addItem()" style="font-size: 16px">ADD</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
-  <script src="static/js/upload.js?v=15"></script>
+  <script src="static/js/upload.js?v=22"></script>
 {% endblock content %}
