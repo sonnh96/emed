@@ -163,7 +163,7 @@
                       <td class="td__content" style="text-align: left;">
                         {% raw %}{{d.name}}{% endraw %}
                       </td>
-                      <td class="td__content text-center">
+                      <td class="td__content text-center owl-carousel">
                         <div class="preview__img" v-for="img in d.images" style="display: inline-block">
                           <img :src="'/static/uploaded/'+img" style="width: 100%">
                         </div>
@@ -183,13 +183,13 @@
           <ul class="pagination justify-content-center">
             <li><a @click="first"> << </a></li>
             <li><a @click="prev"> < </a></li>
-            <li v-if="pageCount < 10" v-for="p in getRange(pageNo, pageCount)" :class="pageNo == p ? 'active' : ''">
+            <li v-if="pageCount < 6" v-for="p in getRange(pageNo, pageCount)" :class="pageNo == p ? 'active' : ''">
               <a @click="page(p)">{% raw %}{{p}}{% endraw %}</a>
             </li>
-            <li v-if="pageNo < pageCount - 9 && pageCount > 10" v-for="p in getRange(pageNo, pageNo + 9)" :class="pageNo == p ? 'active' : ''">
+            <li v-if="pageNo < pageCount - 5 && pageCount > 6" v-for="p in getRange(pageNo, pageNo + 5)" :class="pageNo == p ? 'active' : ''">
               <a @click="page(p)">{% raw %}{{p}}{% endraw %}</a>
             </li>
-            <li v-if="pageNo >= pageCount - 9 && pageCount > 10" v-for="p in getRange(pageCount - 9, pageCount)" :class="pageNo == p ? 'active' : ''">
+            <li v-if="pageNo >= pageCount - 5 && pageCount > 6" v-for="p in getRange(pageCount - 5, pageCount)" :class="pageNo == p ? 'active' : ''">
               <a @click="page(p)">{% raw %}{{p}}{% endraw %}</a>
             </li>
             <li><a @click="next"> > </a></li>

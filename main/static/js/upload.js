@@ -126,7 +126,8 @@ myObject = new Vue({
           processData: false,
           success: function () {
             $('body').removeClass("loading");
-            alert('success')
+            alert('success');
+            window.location.replace('/');
           }, error: function () {
             $('body').removeClass("loading");
           }

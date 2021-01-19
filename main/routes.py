@@ -120,16 +120,22 @@ def upload():
                         file.save(os.path.join(UPLOAD_DIR, path))
                         pill_image = PillImages(pill_id=pill.id, label=label, image_url=path)
                         db.session.add(pill_image)
-                        db.session.commit()
                     except Exception as e:
                         print(e)
                 elif status == 2:
                     id = int(request.form['id_' + str(i)])
                     try:
                         PillImages.query.filter_by(id=id).delete()
-                        db.session.commit()
                     except Exception as e:
                         print(e)
+                elif status == 3:
+                    id = int(request.form['id_' + str(i)])
+                    try:
+                        pill_imgage = PillImages.query.filter_by(id=id).first()
+                        pill_imgage.label = label
+                    except Exception as e:
+                        print(e)
+            db.session.commit()
             return jsonify({'mess': 'success'})
     else:
         if 'id' in request.args:
