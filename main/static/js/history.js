@@ -26,14 +26,6 @@ myObject = new Vue({
       this.pageNo = parseInt(p);
     }
   },
-  mounted: function() {
-    $(".owl-carousel").owlCarousel({
-      center: true,
-      items:2,
-      loop:false,
-      margin:2,
-    });
-  },
   methods: {
     selectAll() {
       this.selectedList = [];
