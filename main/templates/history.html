@@ -132,10 +132,9 @@
                           </label>
                         </div>
                       </th>
-                      <th class="text-center" style="width: 80px">#</th>
-                      <th class="text-center" style="width: 150px">ID</th>
+                      <th class="text-center">#</th>
+                      <th class="text-center">ID</th>
                       <th class="text-center">Name</th>
-                      <th class="text-center">Images</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -162,11 +161,6 @@
                       </td>
                       <td class="td__content" style="text-align: left;">
                         {% raw %}{{d.name}}{% endraw %}
-                      </td>
-                      <td class="td__content text-center owl-carousel">
-                        <div class="preview__img" v-for="img in d.images" style="display: inline-block">
-                          <img :src="'/static/uploaded/'+img" style="width: 100%">
-                        </div>
                       </td>
                     </tr>
                     </tbody>
@@ -200,5 +194,5 @@
     </div>
   </div>
   <script src="static/js/socket.io.js"></script>
-  <script src="static/js/history.js?v=2805"></script>
+  <script src="static/js/history.js?v=22"></script>
 {% endblock content %}
