@@ -143,8 +143,8 @@
                           </label>
                         </div>
                       </th>
-                      <th class="text-center" style="width: 80px">#</th>
-                      <th class="text-center" style="width: 150px">ID</th>
+                      <th class="text-center">#</th>
+                      <th class="text-center">ID</th>
                       <th class="text-center">Name</th>
                     </tr>
                     </thead>
@@ -171,7 +171,7 @@
                         </span>
                       </td>
                       <td class="td__content" style="text-align: left;">
-                        <a :href="'/upload?id='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
+                          <a :href="'/upload?id='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
                       </td>
                     </tr>
                     </tbody>
