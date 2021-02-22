@@ -17,24 +17,11 @@
 <div id="login-page">
   <div class="login">
     <h2 class="login-title">
-      <img src="static/imgs/logo.png">
+      Login
     </h2>
 
     <form class="form-login" method="post">
       {{ form.hidden_tag() }}
-      <div class="form-group">
-        {{ form.company_id.label(class="form-control-label") }}
-        {% if form.company_id.errors %}
-          {{ form.company_id(class="form-control form-control-lg is-invalid") }}
-          <div class="invalid-feedback">
-            {% for error in form.company_id.errors %}
-              <span>{{ error }}</span>
-            {% endfor %}
-          </div>
-        {% else %}
-          {{ form.company_id(class="form-control form-control-lg") }}
-        {% endif %}
-      </div>
       <div class="form-group">
         {{ form.username.label(class="form-control-label") }}
         {% if form.username.errors %}
@@ -72,16 +59,6 @@
         {{ form.submit(class="btn-login") }}
       </div>
     </form>
-    <div class="footer">
-      <p>AIME OCR Version 1.1</p>
-      <p>Copyright © AIMENEXT 2020. All rights reserved.</p>
-    </div>
-  </div>
-  <div class="background">
-    <div class="content">
-      <div class="title">AIME - OCR</div>
-      <div class="sub-title">万能OCR</div>
-    </div>
   </div>
 </div>
 </body>

@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
-import secrets
 from flask import render_template, url_for, flash, redirect, request, jsonify, send_file
 from main import app, db, bcrypt, socketio
 from main.forms import *
 from main.models import *
-# from flask_login import login_user, current_user, logout_user, login_required
+from flask_login import login_user, current_user, logout_user, login_required
 import datetime
-import requests
 import json
-import random
-from pdf2image import convert_from_path, convert_from_bytes
-import numpy as np
 from werkzeug.utils import secure_filename
+from functools import wraps
 
 app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'csv', 'ai'])
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -25,20 +21,19 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
-def token_required(f):
+def admin_require(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        token = None
-        if 'x-access-tokens' in request.headers:
-            token = request.headers['x-access-tokens']
-
-        if not token:
-            return jsonify({'message': 'a valid token is missing'})
+        if current_user.admin == 1:
+            return f(*args, **kwargs)
+        else:
+            return "403 Forbidden"
 
     return decorator
 
 
 @app.route("/")
+@login_required
 def home():
     pills = Pill.query
     if 'search' in request.args:
@@ -48,7 +43,7 @@ def home():
     total = pills.count()
     if 'page' in request.args:
         page = int(request.args['page'])
-        pills = pills.paginate(page,10,error_out=False).items
+        pills = pills.paginate(page, 10, error_out=False).items
     else:
         pills = pills.limit(10).all()
 
@@ -67,6 +62,81 @@ def home():
     return render_template('history.html', title='Login', data=res)
 
 
+@app.route("/admin/user_manager")
+@login_required
+@admin_require
+def user_manager():
+    users = User.query.all()
+
+    res = {
+        'data': []
+    }
+    for user in users:
+        res['data'].append({
+            'id': user.id,
+            'name': user.name,
+            'label': user.admin
+        })
+
+    return render_template('user_manager.html', title='Label Manager', data=res)
+
+
+@app.route("/admin/labels_manager")
+@login_required
+@admin_require
+def labels_manager():
+    labels = Labels.query.all()
+
+    res = {
+        'data': []
+    }
+    for label in labels:
+        res['data'].append({
+            'id': label.id,
+            'name': label.name,
+            'label': label.label
+        })
+
+    return render_template('labels.html', title='Label Manager', data=res)
+
+
+@app.route("/admin/upload_manager")
+@login_required
+@admin_require
+def upload_manager():
+    pills = Pill.query.join(User, Pill.created_by==User.id, isouter=True).add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user')).filter(Pill.created_by.isnot(None)).all()
+    res = {
+        'data': []
+    }
+    for pill in pills:
+        res['data'].append({
+            'id': pill.id,
+            'name': pill.name,
+            'pill_id': pill.pill_id,
+            'user': pill.user,
+            'username': pill.username,
+        })
+    return render_template('upload_manager.html', title='Label Manager', data=res)
+
+
+@app.route("/user_upload_manager")
+@login_required
+def user_upload_manager():
+    pills = Pill.query.join(User, Pill.created_by==User.id).add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user')).filter(Pill.created_by.in_([current_user.id])).all()
+    res = {
+        'data': []
+    }
+    for pill in pills:
+        res['data'].append({
+            'id': pill.id,
+            'name': pill.name,
+            'pill_id': pill.pill_id,
+            'user': pill.user,
+            'username': pill.username,
+        })
+    return render_template('upload_manager.html', title='Label Manager', data=res)
+
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -81,7 +151,90 @@ def login():
     return render_template('login.html', title='Login', form=form)
 
 
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+
+@app.route("/add_label", methods=['GET', 'POST'])
+@login_required
+@admin_require
+def add_label():
+    if request.method == 'POST':
+        name = None
+        label = None
+        if 'name' in request.form:
+            name = request.form['name']
+        if 'label' in request.form:
+            label = request.form['label']
+        if name is None or label is None:
+            return jsonify({'mess': 'error'}), 400
+        lab = Labels(name=name, label=label)
+        db.session.add(lab)
+        db.session.commit()
+        return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
+@app.route("/del_label", methods=['GET', 'POST'])
+@login_required
+@admin_require
+def del_label():
+    if request.method == 'POST':
+        if 'id' in request.form:
+            id = request.form['id']
+            Labels.query.filter_by(id=id).delete()
+            db.session.commit()
+            return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
+@app.route("/add_user", methods=['GET', 'POST'])
+@login_required
+@admin_require
+def add_user():
+    if request.method == 'POST':
+        name = None
+        username = None
+        password = None
+        is_admin = False
+        print(request.form)
+        if 'name' in request.form:
+            name = request.form['name']
+        if 'username' in request.form:
+            username = request.form['username']
+        if 'password' in request.form:
+            password = request.form['password']
+            password = bcrypt.generate_password_hash(password).decode('utf-8')
+        if 'is_admin' in request.form:
+            is_admin = True if int(request.form['is_admin']) == 1 else False
+            print(is_admin)
+        if name is None or username is None or password is None:
+            return jsonify({'mess': 'error'}), 400
+        user = User(name=name, username=username, password=password, admin=is_admin, created_ip=request.remote_addr)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
+@app.route("/del_user", methods=['GET', 'POST'])
+@login_required
+@admin_require
+def del_user():
+    if request.method == 'POST':
+        if 'id' in request.form:
+            id = request.form['id']
+            User.query.filter_by(id=id).delete()
+            db.session.commit()
+            return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
 @app.route("/search", methods=['GET', 'POST'])
+@login_required
 def search():
     if request.method == 'POST':
         data = json.loads(request.data)
@@ -99,17 +252,19 @@ def search():
 
 
 @app.route("/upload", methods=['GET', 'POST'])
+@login_required
 def upload():
-    data = None
+    data = {}
     if request.method == 'POST':
+        pill = None
         if 'id' in request.form:
             id = request.form['id']
             pill = Pill.query.filter_by(id=id).first()
         elif 'pill_name' in request.form:
-            pill = Pill(name=request.form['pill_name'])
+            pill = Pill(name=request.form['pill_name'], created_by=current_user.id)
             db.session.add(pill)
             db.session.commit()
-        if pill != None:
+        if pill is not None:
             img_data = request.files.getlist('img_data[]')
             for i, file in enumerate(img_data):
                 label = request.form['label_' + str(i)]
@@ -138,6 +293,15 @@ def upload():
             db.session.commit()
             return jsonify({'mess': 'success'})
     else:
+        labs = Labels.query.all()
+
+        labels = []
+        for label in labs:
+            labels.append({
+                'id': label.id,
+                'name': label.name,
+                'label': label.label
+            })
         if 'id' in request.args:
             id = request.args['id']
             pill = Pill.query.filter_by(id=id).first()
@@ -147,4 +311,5 @@ def upload():
                 'name': pill.name,
                 'images': [{'id': img.id, 'url': '/static/uploaded/' + img.image_url, 'label': img.label} for img in pill.images]
             }
-    return render_template('upload.html', title='Upload', data=data)
+        data['labels'] = labels
+        return render_template('upload.html', title='Upload', data=data)

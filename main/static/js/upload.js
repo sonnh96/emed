@@ -4,6 +4,7 @@ myObject = new Vue({
     list: [],
     formats: [],
     default_type: null,
+    labels: [],
     files: null,
     file: null,
     error: null,
@@ -15,6 +16,7 @@ myObject = new Vue({
     if (localData != null) {
       this.name = localData.name;
       this.id = localData.id;
+      this.labels = localData.labels;
       for(let img of localData.images) {
         this.list.push({
           'id': img.id,
@@ -98,7 +100,7 @@ myObject = new Vue({
       }
     },
     submitFiles() {
-      if (this.name == null && this.name == '') {
+      if (this.name == null || this.name == '') {
         this.error  = true;
         return
       } else {

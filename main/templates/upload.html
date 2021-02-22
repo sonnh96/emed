@@ -20,13 +20,13 @@
           <div class="preview__container">
             <div class="header row" style="font-weight: bold; color: #086799; text-align: center">
               <div class="row" style="margin: auto">
-                <div class="col-md-6 col-ls-6">
+                <div class="col-md-6">
                   <button id="add" type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="selectFile()">
                     <i class="material-icons">add_circle_outline</i>
                     <span>ADD</span>
                   </button>
                 </div>
-                <div class="col-md-6 col-ls-6">
+                <div class="col-md-6">
                   <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color"
                           v-on:click="submitFiles()">
                     <img src="static/imgs/upload.png" alt="">
@@ -37,22 +37,24 @@
             </div>
             <div class="row" style="margin-top: 30px">
               <div class="form-group" style="margin: auto">
-                <label style="font-size: 16px !important; margin-bottom: 10px">Pill Name</label>
+                <label style="font-size: 16px !important; margin-bottom: 20px">Pill Name</label>
                 <input id="name" type="text" class="form-control form-inline" v-model="name">
               </div>
             </div>
-            <div v-if="list.length > 0" class="preview__content">
+            <div v-if="list.length > 0"o class="preview__content">
               <div v-for="f, id in list" v-if="f.status && f.status != 2" class="row" style="margin-bottom: 20px">
                 <div class="col-md-4 col-sm-6">
                   <img class="preview__img" :src="f.url"
                        onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <input v-model="f.label" class="form-control form-inline" style="width: 100%">
+                  <select v-model="f.label" class="form-control form-inline">
+                    <option disabled selected value="">Select label</option>
+                    <option v-for="label in labels" value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
+                  </select>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px"
-                          @click="deleteImg(id)">
+                  <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px" @click="deleteImg(id)">
                     <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
                   </button>
                 </div>
@@ -64,5 +66,5 @@
     </div>
   </div>
 
-  <script src="static/js/upload.js?v=25"></script>
+  <script src="{{ url_for('static', filename='js/upload.js') }}?v=25"></script>
 {% endblock content %}

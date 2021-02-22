@@ -10,24 +10,20 @@
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
-  <link rel="stylesheet" href="static/css/font-awesome.min.css"/>
-  <link rel="stylesheet" href="static/css/owl.carousel.min.css"/>
-  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}"/>
   <!-- CSS Files -->
-  <link href="static/assets/css/dashboard.min.css" rel="stylesheet"/>
-  <link href="static/assets/demo/demo.css" rel="stylesheet"/>
-  <link href="static/assets/css/custom.css?v=2905" rel="stylesheet"/>
+  <link href="{{ url_for('static', filename='assets/css/dashboard.min.css') }}" rel="stylesheet"/>
+  <link href="{{ url_for('static', filename='assets/demo/demo.css') }}" rel="stylesheet"/>
+  <link href="{{ url_for('static', filename='assets/css/custom.css') }}" rel="stylesheet"/>
   <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet"/>
+
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
-  <script src="static/assets/js/core/popper.min.js"></script>
-  <script src="static/js/jquery-ui.min.js"></script>
+  <script src="{{ url_for('static', filename='assets/js/core/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
   <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
-  <script src="static/assets/js/core/bootstrap-material-design.min.js"></script>
-  <script src="static/js/owl.carousel.min.js"></script>
-  <script src="static/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
-  <script src="static/assets/js/plugins/jquery.dataTables.min.js"></script>
-  <script src="static/assets/js/material-dashboard.min.js?v=2.1.0" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='assets/js/core/bootstrap-material-design.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/material-dashboard.min.js') }}" type="text/javascript"></script>
 </head>
 <body class="">
 <script>
@@ -40,7 +36,7 @@
     <div class="logo">
       <div class="menu-icon">
         <button id="minimizeSidebar" class="btn btn-just-icon btn-white btn-fab btn-round">
-          <img src="static/imgs/group8.png" alt=""/>
+          <img src="{{ url_for('static', filename='imgs/group8.png') }}" alt=""/>
         </button>
       </div>
     </div>
@@ -48,51 +44,53 @@
       <ul class="nav">
         <li class="nav-item">
           <a class="nav-link" href="/">
-            <i class="aminext-icon"><img src="static/imgs/home.png" alt=""/></i>
+            <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/home.png') }}" alt=""/></i>
             <p>HOME</p>
           </a>
         </li>
         <li class="nav-item ">
-          <div class="collapse" id="pagesExamples">
-            <ul class="nav">
-              <li class="nav-item ">
-                <a class="nav-link" href="/report">
-                  <span class="sidebar-normal">帳票</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/license_plate">
-                  <span class="sidebar-normal">ナンバープレート</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/driver_license">
-                  <span class="sidebar-normal">運転免許証</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/vehicle_verification">
-                  <span class="sidebar-normal">車検証認識</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="nav-item ">
-          <a class="nav-link" href="/upload">
-            <i class="aminext-icon"><img src="static/imgs/document.png" alt=""/></i>
+          <a class="nav-link" href="{{ url_for('upload') }}">
+            <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/document.png') }}" alt=""/></i>
             <p>UPLOAD</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" data-toggle="collapse" href="#" disabled="disabled">
-            <i class="aminext-icon"><img src="static/imgs/setting.png" alt=""/></i>
-            <p>SETTINGS</p>
-          </a>
-        </li>
+        {% if current_user.admin %}
+          <li class="nav-item ">
+            <a class="nav-link" data-toggle="collapse" href="#pagesExamples">
+              <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/header.png') }}" alt=""/></i>
+              <p>Admin</p>
+            </a>
+            <div class="collapse" id="pagesExamples">
+              <ul class="nav">
+                <li class="nav-item ">
+                  <a class="nav-link" href="{{ url_for('user_manager') }}">
+                    <span class="sidebar-normal">User manager</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('labels_manager') }}">
+                    <span class="sidebar-normal">Label manager</span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('upload_manager') }}">
+                    <span class="sidebar-normal">Upload manager</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        {% else %}
+          <li class="nav-item ">
+            <a class="nav-link" href="{{ url_for('user_upload_manager') }}">
+              <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/header.png') }}" alt=""/></i>
+              <p>Upload manager</p>
+            </a>
+          </li>
+        {% endif %}
         <li class="nav-item ">
-          <a class="nav-link" data-toggle="collapse" href="#mapsExamples" disabled="disabled">
-            <i class="aminext-icon"><img src="static/imgs/book.png" alt=""/></i>
+          <a class="nav-link" data-toggle="collapse" disabled="disabled">
+            <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/book.png') }}" alt=""/></i>
             <p>MANUAL</p>
           </a>
         </li>
@@ -115,12 +113,17 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end">
           <ul class="navbar-nav">
+            <li class="nav-item">
+              <span class="nav-item__name">{{ current_user.name }}</span>
+            </li>
             <li class="nav-item dropdown">
+              <a href="#" class="nav-item__avatar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="{{ url_for('static', filename="imgs/"+current_user.image_file) }}" alt=""/>
+              </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                <a class="dropdown-item" href="/profile">プロフィール</a>
-                <a class="dropdown-item" href="#">設定</a>
+                <a class="dropdown-item" href="/profile">Profile</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout">ログアウト</a>
+                <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
               </div>
             </li>
           </ul>
