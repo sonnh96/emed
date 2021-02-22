@@ -104,7 +104,15 @@ def labels_manager():
 @login_required
 @admin_require
 def upload_manager():
-    pills = Pill.query.join(User, Pill.created_by==User.id, isouter=True).add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user')).filter(Pill.created_by.isnot(None)).all()
+    user_id = request.args.get('userid')
+    if user_id is not None:
+        pills = Pill.query.join(User, Pill.created_by == User.id)\
+            .add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+            .filter(Pill.created_by.in_([user_id])).all()
+    else:
+        pills = Pill.query.join(User, Pill.created_by == User.id, isouter=True)\
+            .add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+            .filter(Pill.created_by.isnot(None)).all()
     res = {
         'data': []
     }
@@ -115,6 +123,7 @@ def upload_manager():
             'pill_id': pill.pill_id,
             'user': pill.user,
             'username': pill.username,
+            'userid': pill.userid
         })
     return render_template('upload_manager.html', title='Label Manager', data=res)
 
@@ -122,7 +131,9 @@ def upload_manager():
 @app.route("/user_upload_manager")
 @login_required
 def user_upload_manager():
-    pills = Pill.query.join(User, Pill.created_by==User.id).add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user')).filter(Pill.created_by.in_([current_user.id])).all()
+    pills = Pill.query.join(User, Pill.created_by == User.id)\
+        .add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+        .filter(Pill.created_by.in_([current_user.id])).all()
     res = {
         'data': []
     }
@@ -133,6 +144,7 @@ def user_upload_manager():
             'pill_id': pill.pill_id,
             'user': pill.user,
             'username': pill.username,
+            'userid': pill.userid
         })
     return render_template('upload_manager.html', title='Label Manager', data=res)
 

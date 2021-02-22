@@ -16,6 +16,7 @@
   <link href="{{ url_for('static', filename='assets/demo/demo.css') }}" rel="stylesheet"/>
   <link href="{{ url_for('static', filename='assets/css/custom.css') }}" rel="stylesheet"/>
   <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet"/>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
@@ -74,7 +75,7 @@
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('upload_manager') }}">
-                    <span class="sidebar-normal">Upload manager</span>
+                    <span class="sidebar-normal">Collected data management</span>
                   </a>
                 </li>
               </ul>
@@ -84,7 +85,7 @@
           <li class="nav-item ">
             <a class="nav-link" href="{{ url_for('user_upload_manager') }}">
               <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/header.png') }}" alt=""/></i>
-              <p>Upload manager</p>
+              <p>Collected data management</p>
             </a>
           </li>
         {% endif %}

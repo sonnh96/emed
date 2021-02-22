@@ -30,6 +30,7 @@
   </style>
   <script>
     var localData = {{ data | tojson }};
+    console.log(localData);
   </script>
   <div id="upload_manager" class="content">
     <div class="container">
@@ -76,7 +77,13 @@
                       <td class="td__content">
                         <a :href="'{{ url_for("upload") }}?id='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
                       </td>
-                      <td class="td__content">{% raw %}{{d.user}}{% endraw %}</td>
+                      <td class="td__content">
+                        {% if current_user.admin %}
+                          <a :href="'{{ url_for("upload_manager") }}?userid='+d.userid">{% raw %}{{d.user}}{% endraw %}</a>
+                        {% else %}
+                          {% raw %}{{d.user}}{% endraw %}
+                        {% endif %}
+                      </td>
                     </tr>
                     </tbody>
                   </table>
