@@ -100,6 +100,37 @@ def labels_manager():
     return render_template('labels.html', title='Label Manager', data=res)
 
 
+@app.route("/image_manager")
+@login_required
+@admin_require
+def image_manager():
+    pill_images = PillImages.query
+    if 'label' in request.args:
+        label = request.args['label']
+        pill_images = pill_images.filter(PillImages.label.in_([label]))
+
+    total = pill_images.count()
+    if 'page' in request.args:
+        page = int(request.args['page'])
+        pill_images = pill_images.paginate(page, 10, error_out=False).items
+    else:
+        pill_images = pill_images.limit(10).all()
+
+    res = {
+        'data': [],
+        'total': total
+    }
+    for pill_image in pill_images:
+        print(pill_image)
+        res['data'].append({
+            'id': pill_image.id,
+            'pill_id': pill_image.pill_id,
+            'label': pill_image.label,
+            'image_url': pill_image.image_url
+        })
+
+    return render_template('image_manager.html', title='Login', data=res)
+
 @app.route("/admin/upload_manager")
 @login_required
 @admin_require
@@ -107,11 +138,11 @@ def upload_manager():
     user_id = request.args.get('userid')
     if user_id is not None:
         pills = Pill.query.join(User, Pill.created_by == User.id)\
-            .add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+            .add_columns(Pill.id, Pill.name, Pill.pill_id, Pill.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
             .filter(Pill.created_by.in_([user_id])).all()
     else:
         pills = Pill.query.join(User, Pill.created_by == User.id, isouter=True)\
-            .add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+            .add_columns(Pill.id, Pill.name, Pill.pill_id, Pill.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
             .filter(Pill.created_by.isnot(None)).all()
     res = {
         'data': []
@@ -122,6 +153,7 @@ def upload_manager():
             'name': pill.name,
             'pill_id': pill.pill_id,
             'user': pill.user,
+            'created_at': pill.created_at,
             'username': pill.username,
             'userid': pill.userid
         })
@@ -132,7 +164,7 @@ def upload_manager():
 @login_required
 def user_upload_manager():
     pills = Pill.query.join(User, Pill.created_by == User.id)\
-        .add_columns(Pill.id, Pill.name, Pill.pill_id, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+        .add_columns(Pill.id, Pill.name, Pill.pill_id, Pill.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
         .filter(Pill.created_by.in_([current_user.id])).all()
     res = {
         'data': []
@@ -142,6 +174,7 @@ def user_upload_manager():
             'id': pill.id,
             'name': pill.name,
             'pill_id': pill.pill_id,
+            'created_at': pill.created_at,
             'user': pill.user,
             'username': pill.username,
             'userid': pill.userid

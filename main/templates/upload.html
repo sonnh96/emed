@@ -50,7 +50,7 @@
                 <div class="col-md-4 col-sm-6">
                   <select v-model="f.label" class="form-control form-inline">
                     <option disabled selected value="">Select label</option>
-                    <option v-for="label in labels" value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
+                    <option v-for="label in labels" :value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
                   </select>
                 </div>
                 <div class="col-md-4 col-sm-6">

@@ -58,20 +58,20 @@
                     <tr>
                       <th class="text-center" style="width: 80px">#</th>
                       <th class="text-center">Name</th>
-                      <th class="text-center">Is admin</th>
+                      <th class="text-center">Role</th>
                       <th class="text-center"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="d in data">
                       <td class=" td__content text-center">
-                        {% raw %}{{d.id}}{% endraw %}
+                        <a :href="'{{ url_for("upload_manager") }}?userid='+d.id">{% raw %}{{d.id}}{% endraw %}</a>
                       </td>
                       <td class=" td__content text-center">
-                        {% raw %}{{d.name}}{% endraw %}
+                        <a :href="'{{ url_for("upload_manager") }}?userid='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
                       </td>
                       <td class="td__content">
-                        {% raw %}{{d.label}}{% endraw %}
+                        {% raw %}{{d.label ? 'admin' : 'normal user'}}{% endraw %}
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="delUser(d.id)"><i class="material-icons">delete_outline</i></button>

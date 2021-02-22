@@ -1,15 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
   <style>
-    .clear {
-      position: absolute;
-      font-size: 15px;
-      color: #000;
-      background-color: transparent;
-      border: none !important;
-      right: 20%;
-      top: 18px;
-    }
     @-webkit-keyframes candystripe {
       to {
         background-position: 20px 0;
@@ -30,9 +21,8 @@
   </style>
   <script>
     var localData = {{ data | tojson }};
-    console.log(localData);
   </script>
-  <div id="upload_manager" class="content">
+  <div id="image_manager" class="content">
     <div class="container">
       <div class="content__button">
         <div class="row">
@@ -51,23 +41,24 @@
           <div class="col-md-12">
             <div class="card card--transparent">
               <div class="card-body p-0">
-                <div class="toolbar"> </div>
+                <div class="toolbar">
+                  <!--        Here you can write extra buttons/actions for the toolbar              -->
+                </div>
                 <div class="material-datatables" style="height: 610px">
                   <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" style="width:100%">
                     <thead>
                     <tr>
-                      <th class="text-center" style="width: 80px">Index</th>
-                      <th class="text-center" style="width: 150px">Pill ID</th>
-                      <th class="text-center">Pill Name</th>
-                      <th class="text-center">Created at</th>
-                      <th class="text-center">Created by</th>
+                      <th class="text-center">Index</th>
+                      <th class="text-center">Pill ID</th>
+                      <th class="text-center">Label</th>
+                      <th class="text-center">Image</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="d in data">
+                    <tr v-for="d in data" :class="d.view_status ? 'font-weight-normal' : 'font-weight-bold'">
                       <td class=" td__content text-center">
                         <span class="td__content-text">
-                          <a :href="'{{ url_for("upload") }}?id='+d.id">{% raw %}{{d.id}}{% endraw %}</a>
+                          <a :href="'/upload?id='+d.id">{% raw %}{{d.id}}{% endraw %}</a>
                         </span>
                       </td>
                       <td class=" td__content text-center">
@@ -76,17 +67,10 @@
                         </span>
                       </td>
                       <td class="td__content">
-                        <a :href="'{{ url_for("upload") }}?id='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
+                        {% raw %}{{d.label}}{% endraw %}
                       </td>
                       <td class="td__content">
-                        {% raw %}{{d.created_at}}{% endraw %}
-                      </td>
-                      <td class="td__content">
-                        {% if current_user.admin %}
-                          <a :href="'{{ url_for("upload_manager") }}?userid='+d.userid">{% raw %}{{d.user}}{% endraw %}</a>
-                        {% else %}
-                          {% raw %}{{d.user}}{% endraw %}
-                        {% endif %}
+                        <img :src="'{{ url_for("static", filename="uploaded/") }}' + d.image_url" height="200">
                       </td>
                     </tr>
                     </tbody>
@@ -99,8 +83,25 @@
           </div>
           <!-- end col-md-12 -->
         </div>
+        <nav>
+          <ul class="pagination justify-content-center">
+            <li><a @click="first"> << </a></li>
+            <li><a @click="prev"> < </a></li>
+            <li v-if="pageCount < 6" v-for="p in getRange(pageNo, pageCount)" :class="pageNo == p ? 'active' : ''">
+              <a @click="page(p)">{% raw %}{{p}}{% endraw %}</a>
+            </li>
+            <li v-if="pageNo < pageCount - 5 && pageCount > 6" v-for="p in getRange(pageNo, pageNo + 5)" :class="pageNo == p ? 'active' : ''">
+              <a @click="page(p)">{% raw %}{{p}}{% endraw %}</a>
+            </li>
+            <li v-if="pageNo >= pageCount - 5 && pageCount > 6" v-for="p in getRange(pageCount - 5, pageCount)" :class="pageNo == p ? 'active' : ''">
+              <a @click="page(p)">{% raw %}{{p}}{% endraw %}</a>
+            </li>
+            <li><a @click="next"> > </a></li>
+            <li><a @click="last"> >> </a></li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
-  <script src=" {{ url_for('static', filename='js/upload_manager.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/image_manager.js') }}?v=22"></script>
 {% endblock content %}

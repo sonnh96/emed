@@ -68,10 +68,10 @@
                         {% raw %}{{d.id}}{% endraw %}
                       </td>
                       <td class=" td__content text-center">
-                        {% raw %}{{d.name}}{% endraw %}
+                        <a :href="'{{ url_for("image_manager") }}?label='+d.label">{% raw %}{{d.name}}{% endraw %}</a>
                       </td>
                       <td class="td__content">
-                        {% raw %}{{d.label}}{% endraw %}
+                        <a :href="'{{ url_for("image_manager") }}?label='+d.label">{% raw %}{{d.label}}{% endraw %}</a>
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="delLabel(d.id)"><i class="material-icons">delete_outline</i></button>
