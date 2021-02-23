@@ -61,13 +61,14 @@
                       <th class="text-center">Image</th>
                       <th class="text-center">Created at</th>
                       <th class="text-center">Created by</th>
+                      <th class="text-center"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="d in data">
                       <td class=" td__content text-center">
                         <span class="td__content-text">
-                          <a :href="'{{ url_for("upload") }}?id='+d.id">{% raw %}{{d.id}}{% endraw %}</a>
+                          {% raw %}{{d.id}}{% endraw %}
                         </span>
                       </td>
                       <td class=" td__content text-center">
@@ -87,6 +88,9 @@
                         {% else %}
                           {% raw %}{{d.user}}{% endraw %}
                         {% endif %}
+                      </td>
+                      <td class="td__content">
+                        <button class="btn btn-danger" @click="delImage(d.id)"><i class="material-icons">delete_outline</i></button>
                       </td>
                     </tr>
                     </tbody>

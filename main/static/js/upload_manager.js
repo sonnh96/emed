@@ -26,6 +26,23 @@ myObject = new Vue({
     // });
   },
   methods: {
-
+    delImage(id) {
+      var formData = new FormData();
+      formData.append('id', id);
+      $.ajax({
+        url: "/del_image",
+        type: "POST",
+        data: formData,
+        mimeTypes: "multipart/form-data",
+        contentType: false,
+        processData: false,
+        success: function (e) {
+          window.location.reload();
+        }, error: function () {
+          // $('body').removeClass("loading");
+          alert('Error');
+        }
+      });
+    }
   }
 });

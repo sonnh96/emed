@@ -265,6 +265,18 @@ def del_label():
     return jsonify({'mess': 'error'}), 400
 
 
+@app.route("/del_image", methods=['GET', 'POST'])
+@login_required
+def del_iamge():
+    if request.method == 'POST':
+        if 'id' in request.form:
+            id = request.form['id']
+            PillImages.query.filter_by(id=id).delete()
+            db.session.commit()
+            return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
 @app.route("/add_user", methods=['GET', 'POST'])
 @login_required
 @admin_require
@@ -289,6 +301,41 @@ def add_user():
         user = User(name=name, username=username, password=password, admin=is_admin, created_ip=request.remote_addr)
         db.session.add(user)
         db.session.commit()
+        return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
+@app.route("/update_user", methods=['GET', 'POST'])
+@login_required
+@admin_require
+def update_user():
+    if request.method == 'POST':
+        id = None
+        name = None
+        password = None
+        is_admin = False
+        if "id" in request.form:
+            id = request.form['id']
+        if 'name' in request.form:
+            name = request.form['name']
+        if 'password' in request.form:
+            password = request.form['password']
+            password = bcrypt.generate_password_hash(password).decode('utf-8')
+        if 'is_admin' in request.form:
+            is_admin = True if int(request.form['is_admin']) == 1 else False
+        if id is None or name is None:
+            return jsonify({'mess': 'error'}), 400
+        try:
+            user = User.query.filter_by(id=id).first()
+            user.name = name
+            user.is_admin = is_admin
+            if password is not None:
+                user.password = password
+
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return jsonify({'mess': 'error'}), 400
         return jsonify({'mess': 'success'})
     return jsonify({'mess': 'error'}), 400
 

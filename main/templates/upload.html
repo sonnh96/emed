@@ -47,13 +47,22 @@
                   <img class="preview__img" :src="f.url"
                        onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
                 </div>
-                <div class="col-md-4 col-sm-6">
+                {% if current_user.admin %}
+                  <div class="col-md-4 col-sm-6">
+                    <select v-model="f.label" class="form-control form-inline">
+                      <option selected disabled value="">Select label</option>
+                      <option v-for="label in labels" :value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
+                    </select>
+                  </div>
+                {% else %}
+                  <div class="col-md-4 col-sm-6">
                     <select v-if="!f.created_by || f.created_by == user_id"  v-model="f.label" class="form-control form-inline">
                       <option selected disabled value="">Select label</option>
                       <option v-for="label in labels" :value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
                     </select>
                     <h2 v-else >{% raw %}{{f.label}}{% endraw %}</h2>
-                </div>
+                  </div>
+                {% endif %}
                 <div class="col-md-4 col-sm-6">
                     <button v-if="!f.created_by || f.created_by == user_id" type="button" class="btn btn-md btn-danger" style="padding: 10px 15px" @click="deleteImg(id)">
                       <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
