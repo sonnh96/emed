@@ -75,6 +75,7 @@
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="delLabel(d.id)"><i class="material-icons">delete_outline</i></button>
+                        <button class="btn btn-success" @click="openEdit(d.id, d.name, d.label)"><i class="material-icons">create</i></button>
                       </td>
                     </tr>
                     </tbody>
@@ -109,11 +110,12 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-success" data-dismiss="modal" @click="addLabel()">Ok</button>
+            <button v-if="selected == null" class="btn btn-success" data-dismiss="modal" @click="addLabel()">Ok</button>
+            <button v-else="selected != null" class="btn btn-success" data-dismiss="modal" @click="editLabel()">Update</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='js/labels.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/labels.js') }}?v=26"></script>
 {% endblock content %}

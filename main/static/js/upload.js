@@ -19,14 +19,16 @@ myObject = new Vue({
       this.id = localData.id;
       this.labels = localData.labels;
       this.user_id = localData.current_user;
-      for(let img of localData.images) {
-        this.list.push({
-          'id': img.id,
-          'status': 3,
-          'url': img.url,
-          'created_by': img.created_by,
-          'label': img.label
-        });
+      if (localData.images) {
+        for (let img of localData.images) {
+          this.list.push({
+            'id': img.id,
+            'status': 3,
+            'url': img.url,
+            'created_by': img.created_by,
+            'label': img.label
+          });
+        }
       }
     }
   },
@@ -43,6 +45,27 @@ myObject = new Vue({
       e.stopPropagation();
       e.preventDefault();
       fileDrag.className = (e.type === 'dragover' ? 'hover' : 'card-body');
+    },
+    hint() {
+      let data = {'name': this.name};
+      $.ajax({
+        url: "/search",
+        type: "POST",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        success: function (e) {
+          $("#name").autocomplete({
+            source: e.data.map(d => {
+              return {"id": d.id, "label": d.name, "value": d.name}
+            }),
+            select: function (event, ui) {
+              window.location.replace('/upload?id=' + ui.item.id)
+            }
+          });
+        }, error: function () {
+          // $('body').removeClass("loading");
+        }
+      });
     },
     deleteImg(index) {
       if (this.list[index].status == 1) {
@@ -104,7 +127,7 @@ myObject = new Vue({
     },
     submitFiles() {
       if (this.name == null || this.name == '') {
-        this.error  = true;
+        this.error = true;
         return
       } else {
         this.error = false;

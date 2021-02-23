@@ -28,9 +28,8 @@
                   </button>
                 </div>
                 <div class="col-md-6">
-                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color"
-                          v-on:click="submitFiles()">
-                    <img src="static/imgs/upload.png" alt="">
+                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="submitFiles()">
+                    <img src="{{ url_for('static', filename='imgs/upload.png') }}" alt="">
                     <span>UPLOAD</span>
                   </button>
                 </div>
@@ -39,7 +38,7 @@
             <div class="row" style="margin-top: 30px">
               <div class="form-group" style="margin: auto">
                 <label style="font-size: 16px !important; margin-bottom: 20px">Pill Name</label>
-                <input id="name" type="text" class="form-control form-inline" v-model="name">
+                <input id="name" type="text" class="form-control form-inline" v-model="name" v-on:keyup="hint">
               </div>
             </div>
             <div v-if="list.length > 0" o class="preview__content">
@@ -68,5 +67,5 @@
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='js/upload.js') }}?v=22"></script>
+  <script src="{{ url_for('static', filename='js/upload.js') }}?v=23"></script>
 {% endblock content %}

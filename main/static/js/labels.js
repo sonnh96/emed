@@ -5,6 +5,7 @@ myObject = new Vue({
     name: null,
     label: null,
     search: null,
+    selected: null,
     filter: []
   },
   beforeMount: function () {
@@ -20,6 +21,13 @@ myObject = new Vue({
       }
     },
     openAdd() {
+      this.selected = null;
+      $("#add-label").modal('toggle');
+    },
+    openEdit(id, name, label) {
+      this.selected = id;
+      this.name = name;
+      this.label = label;
       $("#add-label").modal('toggle');
     },
     addLabel() {
@@ -28,6 +36,25 @@ myObject = new Vue({
       formData.append('label', this.label);
       $.ajax({
         url: "/add_label",
+        type: "POST",
+        data: formData,
+        mimeTypes: "multipart/form-data",
+        contentType: false,
+        processData: false,
+        success: function (e) {
+          window.location.reload();
+        }, error: function (e) {
+          alert('Error');
+        }
+      });
+    },
+    editLabel() {
+      var formData = new FormData();
+      formData.append('id', this.selected);
+      formData.append('name', this.name);
+      formData.append('label', this.label);
+      $.ajax({
+        url: "/update_label",
         type: "POST",
         data: formData,
         mimeTypes: "multipart/form-data",

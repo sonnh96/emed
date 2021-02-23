@@ -223,6 +223,35 @@ def add_label():
     return jsonify({'mess': 'error'}), 400
 
 
+@app.route("/update_label", methods=['GET', 'POST'])
+@login_required
+@admin_require
+def update_label():
+    if request.method == 'POST':
+        name = None
+        label = None
+        id = None
+        if "id" in request.form:
+            id = request.form['id']
+        if 'name' in request.form:
+            name = request.form['name']
+        if 'label' in request.form:
+            label = request.form['label']
+        print(label, name)
+        if id is None or name is None or label is None:
+            return jsonify({'mess': 'error'}), 400
+        try:
+            lab = Labels.query.filter_by(id=id).first()
+            lab.name = name
+            lab.label = label
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            return jsonify({'mess': 'error'}), 400
+        return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400
+
+
 @app.route("/del_label", methods=['GET', 'POST'])
 @login_required
 @admin_require
