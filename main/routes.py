@@ -121,7 +121,6 @@ def image_manager():
         'total': total
     }
     for pill_image in pill_images:
-        print(pill_image)
         res['data'].append({
             'id': pill_image.id,
             'pill_id': pill_image.pill_id,
@@ -131,27 +130,28 @@ def image_manager():
 
     return render_template('image_manager.html', title='Login', data=res)
 
+
 @app.route("/admin/upload_manager")
 @login_required
 @admin_require
 def upload_manager():
     user_id = request.args.get('userid')
     if user_id is not None:
-        pills = Pill.query.join(User, Pill.created_by == User.id)\
-            .add_columns(Pill.id, Pill.name, Pill.pill_id, Pill.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
-            .filter(Pill.created_by.in_([user_id])).all()
+        pill_images = PillImages.query.join(User, PillImages.created_by == User.id)\
+            .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+            .filter(PillImages.created_by.in_([user_id])).all()
     else:
-        pills = Pill.query.join(User, Pill.created_by == User.id, isouter=True)\
-            .add_columns(Pill.id, Pill.name, Pill.pill_id, Pill.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
-            .filter(Pill.created_by.isnot(None)).all()
+        pill_images = PillImages.query.join(User, PillImages.created_by == User.id, isouter=True)\
+            .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+            .filter(PillImages.created_by.isnot(None)).all()
     res = {
         'data': []
     }
-    for pill in pills:
+    for pill in pill_images:
         res['data'].append({
             'id': pill.id,
-            'name': pill.name,
             'pill_id': pill.pill_id,
+            'image_url': pill.image_url,
             'user': pill.user,
             'created_at': pill.created_at,
             'username': pill.username,
@@ -163,16 +163,16 @@ def upload_manager():
 @app.route("/user_upload_manager")
 @login_required
 def user_upload_manager():
-    pills = Pill.query.join(User, Pill.created_by == User.id)\
-        .add_columns(Pill.id, Pill.name, Pill.pill_id, Pill.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
-        .filter(Pill.created_by.in_([current_user.id])).all()
+    pill_images = PillImages.query.join(User, PillImages.created_by == User.id) \
+        .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid')) \
+        .filter(PillImages.created_by.in_([current_user.id])).all()
     res = {
         'data': []
     }
-    for pill in pills:
+    for pill in pill_images:
         res['data'].append({
             'id': pill.id,
-            'name': pill.name,
+            'image_url': pill.image_url,
             'pill_id': pill.pill_id,
             'created_at': pill.created_at,
             'user': pill.user,
@@ -255,7 +255,6 @@ def add_user():
             password = bcrypt.generate_password_hash(password).decode('utf-8')
         if 'is_admin' in request.form:
             is_admin = True if int(request.form['is_admin']) == 1 else False
-            print(is_admin)
         if name is None or username is None or password is None:
             return jsonify({'mess': 'error'}), 400
         user = User(name=name, username=username, password=password, admin=is_admin, created_ip=request.remote_addr)
@@ -318,7 +317,7 @@ def upload():
                     try:
                         path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
                         file.save(os.path.join(UPLOAD_DIR, path))
-                        pill_image = PillImages(pill_id=pill.id, label=label, image_url=path)
+                        pill_image = PillImages(pill_id=pill.id, label=label, image_url=path, created_by=current_user.id)
                         db.session.add(pill_image)
                     except Exception as e:
                         print(e)
@@ -354,7 +353,7 @@ def upload():
                 'id': pill.id,
                 'pill_id': pill.pill_id,
                 'name': pill.name,
-                'images': [{'id': img.id, 'url': '/static/uploaded/' + img.image_url, 'label': img.label} for img in pill.images]
+                'images': [{'id': img.id, 'url': '/static/uploaded/' + img.image_url, 'label': img.label, 'created_by': img.created_by} for img in pill.images]
             }
         data['labels'] = labels
         return render_template('upload.html', title='Upload', data=data)

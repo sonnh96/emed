@@ -8,8 +8,9 @@ myObject = new Vue({
     files: null,
     file: null,
     error: null,
-    label: null,
+    label: "",
     name: null,
+    user_id: null,
     id: null
   },
   beforeMount: function () {
@@ -17,11 +18,13 @@ myObject = new Vue({
       this.name = localData.name;
       this.id = localData.id;
       this.labels = localData.labels;
+      this.user_id = localData.current_user;
       for(let img of localData.images) {
         this.list.push({
           'id': img.id,
           'status': 3,
           'url': img.url,
+          'created_by': img.created_by,
           'label': img.label
         });
       }

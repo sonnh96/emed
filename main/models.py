@@ -68,6 +68,7 @@ class PillImages(db.Model):
     pill_id = db.Column(db.String(20), db.ForeignKey('pill.id'), nullable=False)
     label = db.Column(db.String(200), nullable=True)
     image_url = db.Column(db.String(200), nullable=False)
+    created_by = db.Column(db.String(20), db.ForeignKey('user.id'), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, nullable=True)
 

@@ -11,6 +11,7 @@
   </style>
   <script>
     var localData = {{ data | tojson }};
+    localData['current_user'] = {{ current_user.id }};
   </script>
   <div id="upload" class="content">
     <div class="container">
@@ -41,22 +42,23 @@
                 <input id="name" type="text" class="form-control form-inline" v-model="name">
               </div>
             </div>
-            <div v-if="list.length > 0"o class="preview__content">
+            <div v-if="list.length > 0" o class="preview__content">
               <div v-for="f, id in list" v-if="f.status && f.status != 2" class="row" style="margin-bottom: 20px">
                 <div class="col-md-4 col-sm-6">
                   <img class="preview__img" :src="f.url"
                        onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <select v-model="f.label" class="form-control form-inline">
-                    <option disabled selected value="">Select label</option>
-                    <option v-for="label in labels" :value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
-                  </select>
+                    <select v-if="!f.created_by || f.created_by == user_id"  v-model="f.label" class="form-control form-inline">
+                      <option selected disabled value="">Select label</option>
+                      <option v-for="label in labels" :value="label.label">{% raw %}{{label.name}}{% endraw %}</option>
+                    </select>
+                    <h2 v-else >{% raw %}{{f.label}}{% endraw %}</h2>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                  <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px" @click="deleteImg(id)">
-                    <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
-                  </button>
+                    <button v-if="!f.created_by || f.created_by == user_id" type="button" class="btn btn-md btn-danger" style="padding: 10px 15px" @click="deleteImg(id)">
+                      <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
+                    </button>
                 </div>
               </div>
             </div>
@@ -66,5 +68,5 @@
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='js/upload.js') }}?v=25"></script>
+  <script src="{{ url_for('static', filename='js/upload.js') }}?v=22"></script>
 {% endblock content %}

@@ -58,7 +58,7 @@
                     <tr>
                       <th class="text-center" style="width: 80px">Index</th>
                       <th class="text-center" style="width: 150px">Pill ID</th>
-                      <th class="text-center">Pill Name</th>
+                      <th class="text-center">Image</th>
                       <th class="text-center">Created at</th>
                       <th class="text-center">Created by</th>
                     </tr>
@@ -76,7 +76,7 @@
                         </span>
                       </td>
                       <td class="td__content">
-                        <a :href="'{{ url_for("upload") }}?id='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
+                        <img :src="'{{ url_for("static", filename="uploaded/") }}' + d.image_url" height="200">
                       </td>
                       <td class="td__content">
                         {% raw %}{{d.created_at}}{% endraw %}

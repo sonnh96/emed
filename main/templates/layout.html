@@ -29,6 +29,10 @@
     a {
       text-transform: none !important;
     }
+    .btn {
+      padding: 5px 10px;
+      color: white;
+    }
   </style>
 </head>
 <body class="">
@@ -64,18 +68,18 @@
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#pagesExamples">
               <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/header.png') }}" alt=""/></i>
-              <p>Admin</p>
+              <p>ADMIN</p>
             </a>
             <div class="collapse" id="pagesExamples">
               <ul class="nav">
                 <li class="nav-item ">
                   <a class="nav-link" href="{{ url_for('user_manager') }}">
-                    <span class="sidebar-normal">User manager</span>
+                    <span class="sidebar-normal">User management</span>
                   </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('labels_manager') }}">
-                    <span class="sidebar-normal">Label manager</span>
+                    <span class="sidebar-normal">Label management</span>
                   </a>
                 </li>
                 <li class="nav-item">
