@@ -57,9 +57,9 @@ myObject = new Vue({
         success: function (e) {
           // $('body').removeClass("loading");
           $( "#tags" ).autocomplete({
-            source: e.data.map(d => d.name),
+            source: e.data.map(d => d.name + (d.unit != null ? " ("+d.unit+")" : "")),
             select: function( event, ui ) {
-              self.search = ui.item.value
+              self.search = ui.item.value;
               self.reloadData()
             }
           });
