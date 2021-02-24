@@ -359,12 +359,13 @@ def search():
     if request.method == 'POST':
         data = json.loads(request.data)
         name = data.get('name')
-        pills = Pill.query.with_entities(Pill.id, Pill.pill_id, Pill.name).filter(Pill.name.like("%{}%".format(name))).limit(10).all()
+        pills = Pill.query.with_entities(Pill.id, Pill.pill_id, Pill.name, Pill.unit).filter(Pill.name.like("%{}%".format(name))).limit(10).all()
         res = []
         for pill in pills:
             res.append({
                 'id': pill.id,
                 'pill_id': pill.pill_id,
+                'unit': pill.unit if pill.unit is not None and pill.unit != '' else None,
                 'name': pill.name
             })
         return jsonify({'mess': 'success', 'data': res})

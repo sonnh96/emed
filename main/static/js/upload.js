@@ -56,7 +56,7 @@ myObject = new Vue({
         success: function (e) {
           $("#name").autocomplete({
             source: e.data.map(d => {
-              return {"id": d.id, "label": d.name, "value": d.name}
+              return {"id": d.id, "label": d.name + (d.unit != null ? " ("+d.unit+")" : ""), "value": d.name}
             }),
             select: function (event, ui) {
               window.location.replace('/upload?id=' + ui.item.id)
