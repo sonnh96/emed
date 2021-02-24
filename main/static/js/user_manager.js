@@ -33,6 +33,10 @@ myObject = new Vue({
       this.is_admin = admin;
       $("#add-user").modal('toggle');
     },
+    openDel(id) {
+      this.selected = id;
+      $("#del-user").modal('toggle');
+    },
     addUser() {
       if (this.name == null || this.name == '' || this.username == null || this.username == '' || this.password == null || this.password == '') {
         this.error = true;
@@ -87,9 +91,9 @@ myObject = new Vue({
         });
       }
     },
-    delUser(id) {
+    delUser() {
       var formData = new FormData();
-      formData.append('id', id);
+      formData.append('id', this.selected);
       $.ajax({
         url: "/del_user",
         type: "POST",

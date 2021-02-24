@@ -74,7 +74,7 @@
                         <a :href="'{{ url_for("image_manager") }}?label='+d.label">{% raw %}{{d.label}}{% endraw %}</a>
                       </td>
                       <td class="td__content">
-                        <button class="btn btn-danger" @click="delLabel(d.id)"><i class="material-icons">delete_outline</i></button>
+                        <button class="btn btn-danger" @click="openDel(d.id)"><i class="material-icons">delete_outline</i></button>
                         <button class="btn btn-success" @click="openEdit(d.id, d.name, d.label)"><i class="material-icons">create</i></button>
                       </td>
                     </tr>
@@ -116,6 +116,25 @@
         </div>
       </div>
     </div>
+    <div id="del-label" class="modal fade" role="dialog">
+      <div style="width:850px" class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="modal-header">
+              <h2>Do you want to delete this label?</h2>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success btn-sm" data-dismiss="modal" v-on:click="">
+              Cancel
+            </button>
+            <button class="btn btn-danger" @click="delLabel()">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <script src="{{ url_for('static', filename='js/labels.js') }}?v=26"></script>
+  <script src="{{ url_for('static', filename='js/labels.js') }}?v=234"></script>
 {% endblock content %}

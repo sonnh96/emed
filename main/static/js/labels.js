@@ -30,6 +30,10 @@ myObject = new Vue({
       this.label = label;
       $("#add-label").modal('toggle');
     },
+    openDel(id) {
+      this.selected = id;
+      $("#del-label").modal('toggle');
+    },
     addLabel() {
       var formData = new FormData();
       formData.append('name', this.name);
@@ -67,9 +71,9 @@ myObject = new Vue({
         }
       });
     },
-    delLabel(id) {
+    delLabel() {
       var formData = new FormData();
-      formData.append('id', id);
+      formData.append('id', this.selected);
       $.ajax({
         url: "/del_label",
         type: "POST",
