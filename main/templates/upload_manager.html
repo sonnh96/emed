@@ -30,7 +30,6 @@
   </style>
   <script>
     var localData = {{ data | tojson }};
-    console.log(localData);
   </script>
   <div id="upload_manager" class="content">
     <div class="container">
@@ -59,8 +58,10 @@
                       <th class="text-center" style="width: 80px">Index</th>
                       <th class="text-center" style="width: 150px">Pill ID</th>
                       <th class="text-center">Image</th>
+                      <th class="text-center">Type</th>
                       <th class="text-center">Created at</th>
                       <th class="text-center">Created by</th>
+                      <th class="text-center">Total</th>
                       <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -77,7 +78,10 @@
                         </span>
                       </td>
                       <td class="td__content">
-                        <img :src="'{{ url_for("static", filename="uploaded/") }}' + d.image_url" height="200">
+                        <a :href="'{{ url_for("static", filename="uploaded/") }}' + d.image_url" height="200">{% raw %}{{d.image_url}}{% endraw %}</a>
+                      </td>
+                      <td class="td__content">
+                        {% raw %}{{d.type == 'pill' ? 'Pill' : 'Prescription'}}{% endraw %}
                       </td>
                       <td class="td__content">
                         {% raw %}{{d.created_at}}{% endraw %}
@@ -88,6 +92,9 @@
                         {% else %}
                           {% raw %}{{d.user}}{% endraw %}
                         {% endif %}
+                      </td>
+                      <td class="td__content">
+                        {% raw %}{{d.total}}{% endraw %}
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="delImage(d.id)"><i class="material-icons">delete_outline</i></button>

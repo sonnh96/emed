@@ -1,7 +1,7 @@
 from datetime import datetime
 from main import db, login_manager
 from flask_login import UserMixin
-
+import enum
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f"User('{self.id}', '{self.username}', '{self.email}', '{self.image_file}')"
+        return f"User('{self.id}', '{self.name}', '{self.username}', '{self.email}', '{self.image_file}')"
 
 
 class Labels(db.Model):
@@ -63,9 +63,14 @@ class Pill(db.Model):
             f"'{self.benefit}', '{self.dosage}', '{self.contraindication}', '{self.warning}', '{self.side_effect}', '{self.price}')"
 
 
+class Types(enum.Enum):
+    pill = 'pill'
+    bill = 'bill'
+
 class PillImages(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    pill_id = db.Column(db.String(20), db.ForeignKey('pill.id'), nullable=False)
+    pill_id = db.Column(db.String(20), db.ForeignKey('pill.id'), nullable=True)
+    type = db.Column(db.Enum(Types), nullable=True, default=Types.pill)
     label = db.Column(db.String(200), nullable=True)
     image_url = db.Column(db.String(200), nullable=False)
     created_by = db.Column(db.String(20), db.ForeignKey('user.id'), nullable=True)
@@ -73,4 +78,4 @@ class PillImages(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f"PillImages('{self.id}', '{self.pill_id}', '{self.label}', '{self.image_url}', '{self.created_at}', '{self.deleted_at}')"
+        return f"PillImages('{self.id}', '{self.pill_id}', '{self.type}', '{self.label}', '{self.image_url}', '{self.created_at}', '{self.deleted_at}')"

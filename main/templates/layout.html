@@ -58,10 +58,24 @@
           </a>
         </li>
         <li class="nav-item ">
-          <a class="nav-link" href="{{ url_for('upload') }}">
+          <a class="nav-link" data-toggle="collapse" href="#uploads">
             <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/document.png') }}" alt=""/></i>
             <p>UPLOAD</p>
           </a>
+          <div class="collapse" id="uploads">
+            <ul class="nav">
+              <li class="nav-item ">
+                <a class="nav-link" href="{{ url_for('upload') }}">
+                  <span class="sidebar-normal">Pill image</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('upload_prescription') }}">
+                  <span class="sidebar-normal">Prescription image</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </li>
         {% if current_user.admin %}
           <li class="nav-item ">

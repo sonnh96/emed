@@ -5,33 +5,15 @@ myObject = new Vue({
     formats: [],
     default_type: null,
     labels: [],
-    files: null,
-    file: null,
+    files:  [],
+    file: [],
     error: null,
     label: "",
     name: null,
     user_id: null,
     id: null
   },
-  beforeMount: function () {
-    if (localData != null) {
-      this.name = localData.name;
-      this.id = localData.id;
-      this.labels = localData.labels;
-      this.user_id = localData.current_user;
-      if (localData.images) {
-        for (let img of localData.images) {
-          this.list.push({
-            'id': img.id,
-            'status': 3,
-            'url': img.url,
-            'created_by': img.created_by,
-            'label': img.label
-          });
-        }
-      }
-    }
-  },
+  beforeMount: function () {},
   mounted: function () {
     this.selectFile();
     $('#add').click();
@@ -83,11 +65,11 @@ myObject = new Vue({
       var self = this;
       ([...droppedFiles]).forEach(f => {
         if (f.type.match('image.*') || f.type.match('application/pdf')) {
-          self.file = {
+          self.files.push({
             'file': f,
             'url': URL.createObjectURL(f),
             'name': f.name,
-          };
+          });
         }
       });
     },
@@ -100,51 +82,26 @@ myObject = new Vue({
     handleFilesUpload() {
       let files = this.$refs.files.files;
       for(let file of files) {
-        let data = {
+        this.list.push({
           'file': file,
           'url': URL.createObjectURL(file),
           'name': file.name
-        };
-        data['label'] = "";
-        data['status'] = 1;
-        this.list.push(data);
+        });
       }
+      console.log(this.list);
     },
     clear() {
       this.list = [];
     },
-    addItem() {
-      if (this.file != null) {
-        this.file['label'] = this.label;
-        this.file['status'] = 1;
-        this.list.push(this.file);
-        this.file = null;
-        this.label = null;
-        $('#upload-item').modal('toggle');
-      }
-    },
     submitFiles() {
-      if (this.name == null || this.name == '') {
-        this.error = true;
-        return
-      } else {
-        this.error = false;
-      }
       if (this.list.length > 0) {
         var formData = new FormData();
-        if (this.id != null) {
-          formData.append("id", this.id);
-        }
-        formData.append("pill_name", this.name);
         for (let i in this.list) {
           formData.append("img_data[]", this.list[i].file ? this.list[i].file : new File([""], "test"));
-          formData.append("label_" + i, this.list[i].label != null ? this.list[i].label : '');
-          formData.append("status_" + i, this.list[i].status);
-          formData.append("id_" + i, this.list[i].id);
         }
         $('body').addClass("loading");
         $.ajax({
-          url: "/upload",
+          url: "/upload_prescription",
           type: "POST",
           data: formData,
           mimeTypes: "multipart/form-data",

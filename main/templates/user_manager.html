@@ -58,6 +58,7 @@
                     <tr>
                       <th class="text-center" style="width: 80px">#</th>
                       <th class="text-center">Name</th>
+                      <th class="text-center">LoginID</th>
                       <th class="text-center">Role</th>
                       <th class="text-center"></th>
                     </tr>
@@ -69,6 +70,9 @@
                       </td>
                       <td class=" td__content text-center">
                         <a :href="'{{ url_for("upload_manager") }}?userid='+d.id">{% raw %}{{d.name}}{% endraw %}</a>
+                      </td>
+                      <td class=" td__content text-center">
+                        {% raw %}{{d.username}}{% endraw %}
                       </td>
                       <td class="td__content">
                         {% raw %}{{d.label ? 'admin' : 'normal user'}}{% endraw %}

@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+  <style type="text/css">
+    table tr td {
+      padding: 10px 15px;
+    }
+
+    .col-ls-6 {
+      width: 50%;
+    }
+  </style>
+  <div id="upload" class="content">
+    <div class="container">
+      <div class="card">
+        <div id="upload-content" class="card-body">
+          <input type="file" id="files" ref="files" v-on:change="handleFilesUpload($event)" hidden accept="image/*" multiple/>
+          <div class="preview__container">
+            <div class="header row" style="font-weight: bold; color: #086799; text-align: center">
+              <div class="row" style="margin: auto">
+                <div class="col-md-6">
+                  <button id="add" type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="selectFile()">
+                    <i class="material-icons">add_circle_outline</i>
+                    <span>ADD</span>
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="submitFiles()">
+                    <img src="{{ url_for('static', filename='imgs/upload.png') }}" alt="">
+                    <span>UPLOAD</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div v-if="list.length > 0" o class="preview__content">
+              <div v-for="f, id in list" class="row" style="margin-bottom: 20px">
+                <div class="col-md-6 col-sm-6">
+                  <img class="preview__img" :src="f.url"
+                       onError="this.onerror=null; this.src='static/imgs/pdf.jpg';">
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <button type="button" class="btn btn-md btn-danger" style="padding: 10px 15px" @click="deleteImg(id)">
+                      <i class="material-icons" style="font-size: 2rem !important;">delete_outline</i>
+                    </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/upload_prescription.js') }}?v=25"></script>
+{% endblock content %}

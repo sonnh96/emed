@@ -15,7 +15,17 @@ myObject = new Vue({
   },
   beforeMount: function () {
     this.data = localData['data'];
-
+    let users = {};
+    this.data.forEach(function(d) {
+      if(!users[d.created_by]) {
+        users[d.created_by] = 1
+      } else {
+        users[d.created_by] += 1
+      }
+    })
+    this.data.forEach(function(d) {
+      d['total'] = users[d.created_by]
+    })
   },
   mounted: function() {
     // $(".owl-carousel").owlCarousel({
