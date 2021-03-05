@@ -61,7 +61,6 @@
                       <th class="text-center">Type</th>
                       <th class="text-center">Created at</th>
                       <th class="text-center">Created by</th>
-                      <th class="text-center">Total</th>
                       <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -92,9 +91,6 @@
                         {% else %}
                           {% raw %}{{d.user}}{% endraw %}
                         {% endif %}
-                      </td>
-                      <td class="td__content">
-                        {% raw %}{{d.total}}{% endraw %}
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="delImage(d.id)"><i class="material-icons">delete_outline</i></button>

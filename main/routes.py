@@ -32,7 +32,7 @@ def admin_require(f):
     return decorator
 
 
-@app.route("/")
+@app.route("/home")
 @login_required
 def home():
     pills = Pill.query
@@ -61,6 +61,11 @@ def home():
 
     return render_template('history.html', title='Login', data=res)
 
+@app.route("/")
+@login_required
+def index():
+    return render_template('home.html', title='Home')
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -70,19 +75,13 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            if user.admin == 1:
-                return redirect(next_page) if next_page else redirect(url_for('home'))
-            elif user.admin == 0:
+            if user.admin:
+                return redirect(next_page) if next_page else redirect(url_for('user_manager'))
+            else:
                 return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
-
-
-@app.route("/home")
-@login_required
-def index():
-    return render_template('home.html', title='Home')
 
 
 @app.route("/admin/user_manager")
@@ -216,7 +215,7 @@ def user_upload_manager():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('index'))
 
 
 @app.route("/add_label", methods=['GET', 'POST'])
