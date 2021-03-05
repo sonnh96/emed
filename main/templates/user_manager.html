@@ -60,6 +60,7 @@
                       <th class="text-center">Name</th>
                       <th class="text-center">LoginID</th>
                       <th class="text-center">Role</th>
+                      <th class="text-center">Total collected</th>
                       <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -76,6 +77,9 @@
                       </td>
                       <td class="td__content">
                         {% raw %}{{d.label ? 'admin' : 'normal user'}}{% endraw %}
+                      </td>
+                      <td class="td__content">
+                        {% raw %}{{d.count}}{% endraw %}
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="openDel(d.id)"><i class="material-icons">delete_outline</i></button>

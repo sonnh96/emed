@@ -67,6 +67,7 @@ class Types(enum.Enum):
     pill = 'pill'
     bill = 'bill'
 
+
 class PillImages(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pill_id = db.Column(db.String(20), db.ForeignKey('pill.id'), nullable=True)

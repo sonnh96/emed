@@ -5,6 +5,23 @@
     <div class="card">
       <div class="card-body">
         <div class="card-around">
+          <button type="button" class="btn btn-custom--large btn-custom--secodary__color">
+            <span>EMED</span>
+          </button>
+          <div class="round-view">
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <a class="round__btn--center" href="{{ url_for('upload') }}">
+                  <span>Pill Image</span>
+                </a>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <a class="round__btn--center" href="{{ url_for('upload_prescription') }}">
+                  <span>Prescription image</span>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

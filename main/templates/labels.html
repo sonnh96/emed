@@ -59,6 +59,7 @@
                       <th class="text-center" style="width: 80px">#</th>
                       <th class="text-center">Name</th>
                       <th class="text-center">Label</th>
+                      <th class="text-center">Total collected</th>
                       <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -72,6 +73,9 @@
                       </td>
                       <td class="td__content">
                         <a :href="'{{ url_for("image_manager") }}?label='+d.label">{% raw %}{{d.label}}{% endraw %}</a>
+                      </td>
+                      <td class="td__content">
+                        {% raw %}{{d.count}}{% endraw %}
                       </td>
                       <td class="td__content">
                         <button class="btn btn-danger" @click="openDel(d.id)"><i class="material-icons">delete_outline</i></button>

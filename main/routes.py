@@ -62,6 +62,29 @@ def home():
     return render_template('history.html', title='Login', data=res)
 
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            if user.admin == 1:
+                return redirect(next_page) if next_page else redirect(url_for('home'))
+            elif user.admin == 0:
+                return redirect(next_page) if next_page else redirect(url_for('index'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/home")
+@login_required
+def index():
+    return render_template('home.html', title='Home')
+
+
 @app.route("/admin/user_manager")
 @login_required
 @admin_require
@@ -76,10 +99,11 @@ def user_manager():
             'id': user.id,
             'name': user.name,
             'username': user.username,
+            'count': PillImages.query.filter_by(created_by=user.id).count(),
             'label': user.admin
         })
-    
-    return render_template('user_manager.html', title='Usser Manager', data=res)
+
+    return render_template('user_manager.html', title='User Manager', data=res)
 
 
 @app.route("/admin/labels_manager")
@@ -95,6 +119,7 @@ def labels_manager():
         res['data'].append({
             'id': label.id,
             'name': label.name,
+            'count': PillImages.query.filter_by(label=label.label).count(),
             'label': label.label
         })
 
@@ -129,7 +154,7 @@ def image_manager():
             'image_url': pill_image.image_url
         })
 
-    return render_template('image_manager.html', title='Login', data=res)
+    return render_template('image_manager.html', title='Images', data=res)
 
 
 @app.route("/admin/upload_manager")
@@ -138,12 +163,14 @@ def image_manager():
 def upload_manager():
     user_id = request.args.get('userid')
     if user_id is not None:
-        pill_images = PillImages.query.join(User, PillImages.created_by == User.id)\
-            .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.type, PillImages.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+        pill_images = PillImages.query.join(User, PillImages.created_by == User.id) \
+            .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.type, PillImages.created_at, User.username.label('username'), User.name.label('user'),
+                         User.id.label('userid')) \
             .filter(PillImages.created_by.in_([user_id])).all()
     else:
-        pill_images = PillImages.query.join(User, PillImages.created_by == User.id, isouter=True)\
-            .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.type, PillImages.created_at, User.username.label('username'), User.name.label('user'), User.id.label('userid'))\
+        pill_images = PillImages.query.join(User, PillImages.created_by == User.id, isouter=True) \
+            .add_columns(PillImages.id, PillImages.image_url, PillImages.pill_id, PillImages.type, PillImages.created_at, User.username.label('username'), User.name.label('user'),
+                         User.id.label('userid')) \
             .filter(PillImages.created_by.isnot(None)).all()
     res = {
         'data': []
@@ -183,20 +210,6 @@ def user_upload_manager():
             'userid': pill.userid
         })
     return render_template('upload_manager.html', title='Label Manager', data=res)
-
-
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
 
 
 @app.route("/logout")
@@ -442,11 +455,9 @@ def upload():
 @app.route("/upload_prescription", methods=['GET', 'POST'])
 @login_required
 def upload_prescription():
-    data = {}
     if request.method == 'POST':
         img_data = request.files.getlist('img_data[]')
         for i, file in enumerate(img_data):
-            label = None
             try:
                 path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
                 file.save(os.path.join(UPLOAD_DIR, path))
