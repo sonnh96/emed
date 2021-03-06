@@ -50,12 +50,12 @@ myObject = new Vue({
       });
     },
     deleteImg(index) {
-      if (this.list[index].status == 1) {
-        this.list.splice(index, 1);
-      } else {
-        this.list[index].status = 2;
-        this.list = [...this.list]
-      }
+      // if (this.list[index].status == 1) {
+      // } else {
+      //   this.list[index].status = 2;
+      //   this.list = [...this.list]
+      // }
+      this.list.splice(index, 1);
     },
     fileDropHover(e) {
       var fileDrag = document.getElementById('upload-content');
