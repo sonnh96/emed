@@ -71,9 +71,30 @@ myObject = new Vue({
       if (this.list[index].status == 1) {
         this.list.splice(index, 1);
       } else {
-        this.list[index].status = 2;
-        this.list = [...this.list]
+        // this.list[index].status = 2;
+        // this.list = [...this.list]
+        this.delImage(this.list[index].id);
+        this.list.splice(index, 1);
       }
+    },
+    delImage(id) {
+      var formData = new FormData();
+      formData.append('id', id);
+      $.ajax({
+        url: "/del_image",
+        type: "POST",
+        data: formData,
+        mimeTypes: "multipart/form-data",
+        contentType: false,
+        processData: false,
+        success: function (e) {
+          // window.location.reload();
+          console.log('success');
+        }, error: function () {
+          // $('body').removeClass("loading");
+          alert('Error');
+        }
+      });
     },
     fileDropHover(e) {
       var fileDrag = document.getElementById('upload-content');

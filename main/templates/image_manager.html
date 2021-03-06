@@ -58,12 +58,12 @@
                     <tr v-for="d in data" :class="d.view_status ? 'font-weight-normal' : 'font-weight-bold'">
                       <td class=" td__content text-center">
                         <span class="td__content-text">
-                          <a :href="'/upload?id='+d.id">{% raw %}{{d.id}}{% endraw %}</a>
+                          {% raw %}{{d.id}}{% endraw %}
                         </span>
                       </td>
                       <td class=" td__content text-center">
                         <span class="td__content-text">
-                          <a :href="'{{ url_for("upload") }}?id='+d.id">{% raw %}{{d.pill_id}}{% endraw %}</a>
+                          <a :href="'{{ url_for("upload") }}?id='+d.pill_id">{% raw %}{{d.pill_id}}{% endraw %}</a>
                         </span>
                       </td>
                       <td class="td__content">
@@ -103,5 +103,5 @@
       </div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='js/image_manager.js') }}?v=22"></script>
+  <script src="{{ url_for('static', filename='js/image_manager.js') }}?v=25"></script>
 {% endblock content %}
