@@ -148,6 +148,7 @@
                       <th class="text-center">Index</th>
                       <th class="text-center">Image</th>
                       <th class="text-center">Status</th>
+                      <th class="text-center">Created by</th>
                       <th class="text-center">Created at</th>
                     </tr>
                     </thead>
@@ -173,10 +174,13 @@
                           <a :href="'/annotation_data?id='+d.id">{% raw %}{{d.img_path}}{% endraw %}</a>
                         </span>
                       </td>
-                      <td class="td__content" style="text-align: left;">
+                      <td class="td__content">
                           <a :href="'/annotation_data?id='+d.id">{% raw %}{{d.save}}{% endraw %}</a>
                       </td>
-                      <td class="td__content" style="text-align: left;">
+                      <td class="td__content">
+                         {% raw %}{{d.created_by}}{% endraw %}
+                      </td>
+                      <td class="td__content">
                           <a :href="'/annotation_data?id='+d.id">{% raw %}{{d.created_at}}{% endraw %}</a>
                       </td>
                     </tr>
@@ -210,5 +214,5 @@
       </div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='js/annotation.js') }}?v=22"></script>
+  <script src="{{ url_for('static', filename='js/annotation.js') }}?v=23"></script>
 {% endblock content %}

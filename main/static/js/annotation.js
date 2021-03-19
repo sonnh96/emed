@@ -106,9 +106,12 @@ myObject = new Vue({
       });
     },
     reloadData() {
-      window.location.replace('/?search=' + (this.search != null ? this.search : '') + '&page=' + this.pageNo);
+      window.location.replace('/annotation?search=' + (this.search != null ? this.search : '') + '&page=' + this.pageNo);
     },
     getRange(start, end) {
+      if (this.pageCount < 5) {
+        start = 1
+      }
       let res = [];
       for (let i = start; i <= end; i++) {
         res.push(i)
@@ -117,7 +120,7 @@ myObject = new Vue({
     },
     searchData() {
       this.pageNo = 1;
-      window.location.replace('/?search=' + (this.search != null ? this.search : ''));
+      window.location.replace('/annotation?search=' + (this.search != null ? this.search : ''));
     },
     page(p) {
       this.pageNo = p;

@@ -487,13 +487,16 @@ def annotation():
         db.session.commit()
         return jsonify({'mess': 'success'})
     else:
-        images = Annotation.query
+        images = User.query.join(Annotation, Annotation.created_by == User.id).add_columns(Annotation.id, Annotation.img_path, Annotation.save, Annotation.description,
+                                                                                                         Annotation.created_at, Annotation.created_by, User.name.label('user'), User.id.label('userid'))
         total = images.count()
+        if current_user.admin != 1:
+            images = images.filter_by(created_by=current_user.id)
         if 'page' in request.args:
             page = int(request.args['page'])
-            images = images.paginate(page, 10, error_out=False).items
+            images = images.order_by(Annotation.id.desc()).paginate(page, 10, error_out=False).items
         else:
-            images = images.limit(10).all()
+            images = images.order_by(Annotation.id.desc()).limit(10).all()
 
         res = {
             'data': [],
@@ -504,7 +507,7 @@ def annotation():
                 'id': image.id,
                 'img_path': image.img_path,
                 'save': image.save,
-                'created_by': image.created_by,
+                'created_by': image.user,
                 'created_at': image.created_at
             })
         return render_template('annotation.html', title='Annotation', data=res)
