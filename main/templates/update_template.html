@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block content %}
+  <style type="text/css">
+    table tr td {
+      padding: 10px 15px;
+    }
+
+    .setting-content {
+      overflow-y: scroll;
+      max-height: 500px !important;
+    }
+    .content {
+      overflow-y: hidden !important;
+    }
+    .form-head {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    body {
+      overflow-y: hidden !important;
+    }
+    .btn {
+      font-size: 14px;
+    }
+
+    .modal-dialog {
+      position: relative;
+      display: table;
+      overflow: auto;
+      width: auto !important;
+      min-width: 300px;
+    }
+
+    .modal-body { /* Restrict Modal width to 90% */
+      overflow-x: auto !important;
+      max-width: 90vw !important;
+    }
+
+    .preview__container {
+      margin-top: 50px;
+    }
+
+    .form-control {
+      background: #ffffff !important;
+    }
+
+    .content {
+      overflow-y: hidden !important;
+    }
+    ::-webkit-scrollbar-track {
+      background: #ddd;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #006fff;
+      border-radius: 10px;
+    }
+
+    .btn-sm {
+      font-size: 10px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .btn-process {
+      background-color: #46C0D2;
+    }
+
+    .btn-delete {
+      background-color: #93A5B6;
+    }
+
+    .footer-button {
+      position: fixed;
+      width: 28%;
+      background-color: inherit;
+      right: 0;
+    }
+
+    .active {
+      color: red !important;
+    }
+
+  </style>
+  <script>
+    var localData = {{ data | tojson }};
+  </script>
+  <div id="update_template" class="content">
+    <div class="preview__container row">
+      <div id="canvasContainer" class="col-md-8 col-xs-12 col-sm-12" style="padding: 0 12%">
+        <canvas id="canvas" style="border: solid 1px; margin: auto"></canvas>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-4 setting-content">
+        <div v-if="rect != null && rect.labels.length > 0">
+          <div v-for="x, id in rect.labels" class="form-item" :id="'form-item-'+id"
+               style="margin: 0 5px 5px 5px; padding: 10px; position:relative; cursor: pointer"
+               @click="selectRect(x, $event)">
+            <div class="form-head" style="font-weight: bold; color: black">
+              <span>Label #{% raw %}{{id}}{% endraw %}</span>
+              <button class="btn btn-danger" @click="removeLabel(x, id)" style="position: absolute; right: 2px; top: 0"><i class="material-icons">delete_outline</i></button>
+            </div>
+            <div class="form-body">
+              <div class="form-group">
+                <input type="text" class="form-control" v-model="rect.labels[id]['label']">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-button" v-if="rect != null">
+      <button class="btn btn-large btn-process" @click="saveTemplate()">Save</button>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/draw.js') }}?v=10011"></script>
+  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=112"></script>
+{% endblock content %}

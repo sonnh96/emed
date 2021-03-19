@@ -59,7 +59,8 @@ def home():
             'images': [img.image_url for img in pill.images]
         })
 
-    return render_template('history.html', title='Login', data=res)
+    return render_template('history.html', title='Home', data=res)
+
 
 @app.route("/")
 @login_required
@@ -468,3 +469,69 @@ def upload_prescription():
         return jsonify({'mess': 'success'})
     else:
         return render_template('upload_prescription.html', title='Upload')
+
+
+@app.route("/annotation", methods=['GET', 'POST'])
+@login_required
+def annotation():
+    if request.method == 'POST':
+        img_data = request.files.getlist('img_data[]')
+        for i, file in enumerate(img_data):
+            try:
+                path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
+                file.save(os.path.join(UPLOAD_DIR, path))
+                ann = Annotation(description=None, img_path=path, created_by=current_user.id)
+                db.session.add(ann)
+            except Exception as e:
+                print(e)
+        db.session.commit()
+        return jsonify({'mess': 'success'})
+    else:
+        images = Annotation.query
+        total = images.count()
+        if 'page' in request.args:
+            page = int(request.args['page'])
+            images = images.paginate(page, 10, error_out=False).items
+        else:
+            images = images.limit(10).all()
+
+        res = {
+            'data': [],
+            'total': total
+        }
+        for image in images:
+            res['data'].append({
+                'id': image.id,
+                'img_path': image.img_path,
+                'save': image.save,
+                'created_by': image.created_by,
+                'created_at': image.created_at
+            })
+        return render_template('annotation.html', title='Annotation', data=res)
+
+
+@app.route("/annotation_data", methods=['GET', 'POST'])
+@login_required
+def annotation_data():
+    if 'id' in request.args:
+        id = request.args['id']
+        template = Annotation.query.filter_by(id=id).first()
+        res = {
+            'id': template.id,
+            'description': template.description,
+            'save': template.save,
+            'img_path': template.img_path,
+            'created_at': template.created_at
+        }
+    return render_template('update_template.html', data=res)
+
+
+@app.route("/save_template", methods=['GET', 'POST'])
+@login_required
+def save_template():
+    obj = Annotation.query.filter_by(id=request.form['id']).first()
+    data = json.loads(request.form['data'])
+    obj.description = json.dumps(data)
+    obj.save = True
+    db.session.commit()
+    return jsonify({'mess': 'success'})

@@ -3,6 +3,7 @@ from main import db, login_manager
 from flask_login import UserMixin
 import enum
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -80,3 +81,16 @@ class PillImages(db.Model):
 
     def __repr__(self):
         return f"PillImages('{self.id}', '{self.pill_id}', '{self.type}', '{self.label}', '{self.image_url}', '{self.created_at}', '{self.deleted_at}')"
+
+
+class Annotation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(50), nullable=True)
+    img_path = db.Column(db.String(20), nullable=False)
+    save = db.Column(db.Boolean, nullable=True, default=False)
+    created_by = db.Column(db.String(20), db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+
+    def __repr__(self):
+        return f"Labels('{self.id}', '{self.img_path}', '{self.description}', '{self.created_at}', '{self.created_by}')"
