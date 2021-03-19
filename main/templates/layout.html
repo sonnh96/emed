@@ -34,6 +34,7 @@
     i {
       color: white !important;
     }
+
     .ui-menu-item {
       font-size: 14px !important;
       padding: 2px;
@@ -80,6 +81,11 @@
                   <span class="sidebar-normal">Prescription image</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('annotation') }}">
+                  <p>Multi-pill image</p>
+                </a>
+              </li>
             </ul>
           </div>
         </li>
@@ -117,12 +123,6 @@
             </a>
           </li>
         {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="/annotation">
-            <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/book.png') }}" alt=""/></i>
-            <p>ANNOTATION</p>
-          </a>
-        </li>
         <li class="nav-item ">
           <a class="nav-link" data-toggle="collapse" disabled="disabled">
             <i class="aminext-icon"><img src="{{ url_for('static', filename='imgs/book.png') }}" alt=""/></i>

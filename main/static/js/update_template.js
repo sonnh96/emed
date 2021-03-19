@@ -91,7 +91,7 @@ myObject = new Vue({
 
       if (window.screen.width < 500) {
         wi = window.screen.width - 80;
-        h = 100;
+        h = window.screen.height - 100;
       }
 
       var canvas = new fabric.Canvas('canvas');
@@ -99,8 +99,14 @@ myObject = new Vue({
 
       var img = new Image();
       img.onload = function () {
-        canvas.setWidth(wi);
-        canvas.setHeight(Math.round(wi / this.width * this.height));
+        if (this.height > h) {
+          canvas.setWidth(Math.round(h / this.height * this.width));
+          canvas.setHeight(h);
+        } else {
+          canvas.setWidth(wi);
+          canvas.setHeight(Math.round(wi / this.width * this.height));
+        }
+
         self.rect = new Rectangle(canvas, '../static/uploaded/' + self.formats['img_path']);
         console.log(Math.round(wi / this.width * this.height));
         self.rect.boxCreated = function () {
