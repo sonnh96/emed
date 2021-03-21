@@ -83,10 +83,10 @@ myObject = new Vue({
     },
     showContent2() {
       var wi = 850;
-      var h = 100;
+      var h = 850;
       if (window.screen.width < 1450) {
         wi = 650;
-        h = 50;
+        h = 650;
       }
 
       if (window.screen.width < 500) {
@@ -99,13 +99,27 @@ myObject = new Vue({
 
       var img = new Image();
       img.onload = function () {
-        if (this.height > h) {
+
+        if (window.screen.width <= 500) {
+          wi = window.screen.width - 80;
+          h = window.screen.height - 300 > 500 ? 400 : window.screen.height - 300; 
+        }
+
+        if (this.height > h && this.height > this.width) {
           canvas.setWidth(Math.round(h / this.height * this.width));
           canvas.setHeight(h);
         } else {
           canvas.setWidth(wi);
           canvas.setHeight(Math.round(wi / this.width * this.height));
         }
+
+        // if (this.height > h) {
+        //   canvas.setWidth(Math.round(h / this.height * this.width));
+        //   canvas.setHeight(h);
+        // } else {
+        //   canvas.setWidth(wi);
+        //   canvas.setHeight(Math.round(wi / this.width * this.height));
+        // }
 
         self.rect = new Rectangle(canvas, '../static/uploaded/' + self.formats['img_path']);
         console.log(Math.round(wi / this.width * this.height));
