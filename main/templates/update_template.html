@@ -85,7 +85,7 @@
     }
 
     @media screen and (max-width: 500px) {
-    .setting-content {
+      .setting-content {
         width: 100%; 
       }
     }
@@ -110,7 +110,7 @@
             </div>
             <div class="form-body">
               <div class="form-group">
-                <input type="text" class="form-control" v-model="rect.labels[id]['label']">
+                <input type="text" class="form-control" :id="'name-'+id" v-model="rect.labels[id]['label']" @change="hint(id)">
               </div>
             </div>
           </div>
@@ -122,5 +122,5 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/draw.js') }}?v=10011"></script>
-  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=21"></script>
+  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=25"></script>
 {% endblock content %}

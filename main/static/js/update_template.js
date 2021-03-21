@@ -81,6 +81,28 @@ myObject = new Vue({
       $('.form-head').removeClass('active');
       $(elmnt).find('.form-head').addClass('active');
     },
+    hint(id) {
+      var self = this;
+      let data = {'name': self.rect.labels[id]['label']};
+      $.ajax({
+        url: "/search",
+        type: "POST",
+        data: JSON.stringify(data),
+        contentType: 'application/json;charset=UTF-8',
+        success: function (e) {
+          $("#name-"+id).autocomplete({
+            source: e.data.map(d => {
+              return {"id": d.id, "label": d.name + (d.unit != null ? " ("+d.unit+")" : ""), "value": d.name}
+            }),
+            select: function (event, ui) {
+              self.rect.labels[id]['label'] = ui.item.label;
+            }
+          });
+        }, error: function () {
+          // $('body').removeClass("loading");
+        }
+      });
+    },
     showContent2() {
       var wi = 850;
       var h = 850;
@@ -89,10 +111,10 @@ myObject = new Vue({
         h = 650;
       }
 
-      if (window.screen.width < 500) {
-        wi = window.screen.width - 80;
-        h = window.screen.height - 300 > 500 ? 400 : window.screen.height - 300;
-      }
+      // if (window.screen.width < 500) {
+      //   wi = window.screen.width - 80;
+      //   h = window.screen.height - 300 > 500 ? 400 : window.screen.height - 300;
+      // }
 
       var canvas = new fabric.Canvas('canvas');
       var self = this;
@@ -113,16 +135,7 @@ myObject = new Vue({
           canvas.setHeight(Math.round(wi / this.width * this.height));
         }
 
-        // if (this.height > h) {
-        //   canvas.setWidth(Math.round(h / this.height * this.width));
-        //   canvas.setHeight(h);
-        // } else {
-        //   canvas.setWidth(wi);
-        //   canvas.setHeight(Math.round(wi / this.width * this.height));
-        // }
-
         self.rect = new Rectangle(canvas, '../static/uploaded/' + self.formats['img_path']);
-        console.log(Math.round(wi / this.width * this.height));
         self.rect.boxCreated = function () {
           self.updateList()
         };
