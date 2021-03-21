@@ -1,27 +1,29 @@
 {% extends "layout.html" %}
 {% block content %}
+<style> 
+  .btn {
+    padding: 25px;
+  }
+</style>
 <div class="content">
   <div class="container">
     <div class="card">
       <div class="card-body">
         <div class="card-around">
-          <button type="button" class="btn btn-custom--large btn-custom--secodary__color">
-            <span>EMED</span>
-          </button>
           <div class="round-view">
             <div class="row">
               <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-                <a class="round__btn--center" href="{{ url_for('upload') }}">
+                <a class="btn btn-custom--large btn-custom--secodary__color" href="{{ url_for('upload') }}">
                   <span>Pill Image</span>
                 </a>
               </div>
               <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
-                <a class="round__btn--center" href="{{ url_for('upload_prescription') }}">
+                <a class="btn btn-custom--large btn-custom--secodary__color" href="{{ url_for('upload_prescription') }}">
                   <span>Prescription image</span>
                 </a>
               </div>
               <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                <a class="round__btn--center" href="{{ url_for('annotation') }}">
+                <a class="btn btn-custom--large btn-custom--secodary__color" href="{{ url_for('annotation') }}">
                   <span>Multi-pill image</span>
                 </a>
               </div>
