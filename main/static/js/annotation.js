@@ -63,10 +63,10 @@ myObject = new Vue({
         mimeTypes: "multipart/form-data",
         contentType: false,
         processData: false,
-        success: function () {
+        success: function (e) {
           $('body').removeClass("loading");
-          alert('success');
-          window.location.reload();
+          console.log(e);
+          window.location.replace('/annotation_data?id=' + e.id);
         }, error: function () {
           $('body').removeClass("loading");
         }
@@ -82,6 +82,24 @@ myObject = new Vue({
     },
     select() {
       this.allSelected = false;
+    },
+    delAnn(id) {
+      var formData = new FormData();
+      formData.append('id', id);
+      $.ajax({
+        url: "/del_template",
+        type: "POST",
+        data: formData,
+        mimeTypes: "multipart/form-data",
+        contentType: false,
+        processData: false,
+        success: function (e) {
+          window.location.reload();
+        }, error: function () {
+          // $('body').removeClass("loading");
+          alert('Error');
+        }
+      });
     },
     hint() {
       let data = {'name': this.search};

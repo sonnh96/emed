@@ -485,7 +485,7 @@ def annotation():
             except Exception as e:
                 print(e)
         db.session.commit()
-        return jsonify({'mess': 'success'})
+        return jsonify({'mess': 'success', 'id': ann.id})
     else:
         images = User.query.join(Annotation, Annotation.created_by == User.id).add_columns(Annotation.id, Annotation.img_path, Annotation.save, Annotation.description,
                                                                                                          Annotation.created_at, Annotation.created_by, User.name.label('user'), User.id.label('userid'))
@@ -538,3 +538,15 @@ def save_template():
     obj.save = True
     db.session.commit()
     return jsonify({'mess': 'success'})
+
+
+@app.route("/del_template", methods=['GET', 'POST'])
+@login_required
+def del_template():
+    if request.method == 'POST':
+        if 'id' in request.form:
+            id = request.form['id']
+            Annotation.query.filter_by(id=id).delete()
+            db.session.commit()
+            return jsonify({'mess': 'success'})
+    return jsonify({'mess': 'error'}), 400

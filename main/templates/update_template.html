@@ -5,20 +5,18 @@
       padding: 10px 15px;
     }
 
-    .setting-content {
-      overflow-y: scroll;
-      max-height: 500px !important;
-    }
-    .content {
-      overflow-y: hidden !important;
-    }
+    
     .form-head {
       margin-bottom: 15px;
       font-size: 18px;
     }
 
     body {
-      overflow-y: hidden !important;
+      overflow-y: hidden;
+    }
+    .setting-content {
+      max-height: 200px;
+      overflow-y: scroll !important;
     }
     .btn {
       font-size: 14px;
@@ -118,5 +116,5 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/draw.js') }}?v=10011"></script>
-  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=222"></script>
+  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=2235"></script>
 {% endblock content %}

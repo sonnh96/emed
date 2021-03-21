@@ -91,7 +91,7 @@ myObject = new Vue({
 
       if (window.screen.width < 500) {
         wi = window.screen.width - 80;
-        h = window.screen.height - 100;
+        h = window.screen.height - 300 > 500 ? 400 : window.screen.height - 300;
       }
 
       var canvas = new fabric.Canvas('canvas');
@@ -114,6 +114,20 @@ myObject = new Vue({
         };
 
         $('.canvas-container').on('mousewheel', function (options) {
+          var delta = options.originalEvent.wheelDelta;
+          if (delta != 0) {
+            options.preventDefault();
+            var pointer = canvas.getPointer(options, true);
+            var point = new fabric.Point(pointer.x, pointer.y);
+            if (delta > 0) {
+              self.rect.zoomIn(point);
+            } else if (delta < 0) {
+              self.rect.zoomOut(point);
+            }
+          }
+        });
+
+        $('.canvas-container').on('DOMMouseScroll', function (options) {
           var delta = options.originalEvent.wheelDelta;
           if (delta != 0) {
             options.preventDefault();
@@ -191,7 +205,8 @@ myObject = new Vue({
         data.push(d);
       }
       xhr.onload = function () {
-        $('body').removeClass('loading');
+        // $('body').removeClass('loading');
+        window.location.replace('/annotation')
       };
       $('body').addClass('loading');
       var fd = new FormData();
