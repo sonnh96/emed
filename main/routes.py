@@ -9,6 +9,8 @@ import datetime
 import json
 from werkzeug.utils import secure_filename
 from functools import wraps
+import cv2
+import numpy as np
 
 app.config['ALLOWED_EXTENSIONS'] = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'csv', 'ai'])
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -479,12 +481,23 @@ def annotation():
         for i, file in enumerate(img_data):
             try:
                 path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
-                file.save(os.path.join(UPLOAD_DIR, path))
+                # file.save(os.path.join(UPLOAD_DIR, path))
+                img = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
+                height, width = img.shape[:2]
+                scale = 1
+                if height > 2048 or width > 2080:
+                    if height > width:
+                        scale = 2048 / height
+                    else:
+                        scale = 2048 / width
+
+                img = cv2.resize(img, None, fx = scale, fy = scale, interpolation = cv2.INTER_CUBIC)
+                cv2.imwrite(os.path.join(UPLOAD_DIR, path), img)
                 ann = Annotation(description=None, img_path=path, created_by=current_user.id)
                 db.session.add(ann)
             except Exception as e:
                 print(e)
-        db.session.commit()
+            db.session.commit()
         return jsonify({'mess': 'success', 'id': ann.id})
     else:
         images = User.query.join(Annotation, Annotation.created_by == User.id).add_columns(Annotation.id, Annotation.img_path, Annotation.save, Annotation.description,
