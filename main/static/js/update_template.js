@@ -82,7 +82,6 @@ myObject = new Vue({
       $(elmnt).find('.form-head').addClass('active');
     },
     hint(id) {
-      console.log(self.rect.labels[id]['label']);
       var self = this;
       let data = {'name': self.rect.labels[id]['label']};
       $.ajax({
