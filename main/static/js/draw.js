@@ -65,9 +65,9 @@ var Rectangle = (function () {
     let wRatio = maxWidth / imgWidth;
     let hRatio = maxHeight / imgHeight;
     let scale = 1;
-    if (imgWidth > maxWidth && wRatio < hRatio) {
+    if (imgWidth >= maxWidth && wRatio <= hRatio) {
       scale = wRatio;
-    } else if (imgHeight > maxHeight && hRatio < wRatio) {
+    } else if (imgHeight >= maxHeight && hRatio <= wRatio) {
       scale = hRatio;
     }
 
@@ -83,6 +83,8 @@ var Rectangle = (function () {
     var self = this;
     this.image = image;
     this.scaledSize = this._getScaleImageInfo(image.width, image.height, this.canvas.width, this.canvas.height);
+    console.log(this.scaledSize);
+
     this.canvas.setWidth(this.scaledSize.width);
     this.canvas.setHeight(this.scaledSize.height);
     this.canvas.calcOffset();
