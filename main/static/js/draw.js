@@ -189,7 +189,7 @@ var Rectangle = (function () {
           originY: 'top',
           width: 0,
           height: 0,
-          hasRotatingPoint: false,
+          // hasRotatingPoint: false,
           stroke: 'red',
           strokeWidth: 0.5,
           fill: 'rgba(0,0,0,0.2)',
@@ -231,20 +231,21 @@ var Rectangle = (function () {
   Rectangle.prototype.getImgWidthHeight = function () {
     return [this.image.width, this.image.height];
   };
-  Rectangle.prototype.addLabel = function (x, y, w, h, label, size_w, size_h) {
+  Rectangle.prototype.addLabel = function (x, y, w, h, angle, label, size_w, size_h) {
     size_h = size_h == null ? this.image.height : size_h;
     size_w = size_w == null ? this.image.width : size_w;
     let scaledSize = this._getScaleImageInfo(size_w, size_h, this.canvas.width, this.canvas.height);
     let scale = scaledSize.scale;
     this.scaleInfor = scale;
     var square = new fabric.Rect({
-      left:  Math.round(x * scale),
-      top:  Math.round(y * scale),
+      left: Math.round(x * scale),
+      top: Math.round(y * scale),
       originX: 'left',
       originY: 'top',
-      width:  Math.round(w * scale),
-      height:  Math.round(h * scale),
-      hasRotatingPoint: false,
+      width: Math.round(w * scale),
+      height: Math.round(h * scale),
+      angle: angle,
+      // hasRotatingPoint: false,
       stroke: 'red',
       strokeWidth: 0.5,
       fill: 'rgba(0,0,0,0.2)',
@@ -452,7 +453,7 @@ var Rectangle = (function () {
       return cav.toDataURL('image/jpeg');
     }
   };
-  Rectangle.prototype.clearLabel= function () {
+  Rectangle.prototype.clearLabel = function () {
     // let ctx = this.canvas.getContext('2d');
     for (let x of this.labels) {
       this.canvas.remove(x);

@@ -196,7 +196,7 @@ myObject = new Vue({
           if (self.formats['description'] != null) {
             var list = JSON.parse(self.formats['description']);
             for (let x of list) {
-              self.rect.addLabel(x["x"], x["y"], x["w"], x["h"], x['label']);
+              self.rect.addLabel(x["x"], x["y"], x["w"], x["h"], x['a'], x['label']);
             }
           }
           $('.setting-content').height($(window).height() - 200);
@@ -227,6 +227,7 @@ myObject = new Vue({
           'y': Math.round(lab.top / zoom),
           'w': Math.round(lab.width / zoom),
           'h': Math.round(lab.height / zoom),
+          'a': lab.angle,
           'label': lab.label
         };
         data.push(d);
