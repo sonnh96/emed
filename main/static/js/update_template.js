@@ -92,7 +92,7 @@ myObject = new Vue({
         success: function (e) {
           $("#name-"+id).autocomplete({
             source: e.data.map(d => {
-              return {"id": d.id, "label": d.name + (d.unit != null ? " ("+d.unit+")" : ""), "value": d.name}
+              return {"id": d.id, "label": d.name + (d.license != null ? " ("+d.license+")" : ""), "value": d.name}
             }),
             select: function (event, ui) {
               self.rect.labels[id]['label'] = ui.item.label;

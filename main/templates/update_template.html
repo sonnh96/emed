@@ -5,19 +5,16 @@
       padding: 10px 15px;
     }
 
-    
+
     .form-head {
       margin-bottom: 15px;
       font-size: 18px;
     }
 
-    body {
-      overflow-y: hidden;
-    }
     .setting-content {
-      max-height: 600px;
       overflow-y: scroll !important;
     }
+
     .btn {
       font-size: 14px;
     }
@@ -43,9 +40,7 @@
       background: #ffffff !important;
     }
 
-    .content {
-      overflow-y: hidden !important;
-    }
+
     ::-webkit-scrollbar-track {
       background: #ddd;
     }
@@ -85,8 +80,16 @@
     }
 
     @media screen and (max-width: 500px) {
+      body {
+        overflow-y: hidden;
+      }
+
+      .content {
+        overflow-y: hidden !important;
+      }
+
       .setting-content {
-        max-height: 200px !important; 
+        max-height: 300px !important;
       }
     }
 
@@ -122,5 +125,5 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/draw.js') }}?v=123"></script>
-  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=2303"></script>
+  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=112"></script>
 {% endblock content %}
