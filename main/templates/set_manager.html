@@ -35,10 +35,20 @@
     <div class="container">
       <div class="content__button">
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"></div>
+          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+            {% if current_user.admin %}
+              <div class="col-md-3 dropdown">
+                <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color">
+                  <a href="{{ url_for("set_register") }}">
+                    <i class="material-icons">add_circle_outline</i>
+                    <span>ADD</span>
+                  </a>
+                </button>
+              </div>
+              {% endif %}
+          </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
             <div class="row">
-              <div class="col-md-3 dropdown"></div>
               <div class="col-md-3"></div>
               <div class="search col-md-6"></div>
             </div>
