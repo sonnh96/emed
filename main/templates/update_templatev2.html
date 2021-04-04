@@ -13,7 +13,7 @@
 
     .setting-content {
       overflow-y: scroll !important;
-      height: 600px !important;
+      height: 700px !important;
     }
 
     .btn {
@@ -98,12 +98,15 @@
   <script>
     var localData = {{ data | tojson }};
   </script>
-  <div id="update_template" class="content">
+  <div id="update_templatev2" class="content">
     <div class="preview__container row">
-      <div id="canvasContainer" class="col-md-8 col-xs-12 col-sm-12" style="padding: 0 12%">
+      <div id="main-image" class="col-md-4 col-xs-12 col-sm-12" style="margin-bottom: 15px;">
+        <img :src="'/static/uploaded/' + main_image" width="90%">
+      </div>
+      <div id="canvasContainer" class="col-md-6 col-xs-12 col-sm-12" style="padding: 0 20px">
         <canvas id="canvas" style="border: solid 1px; margin: auto"></canvas>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-4 setting-content">
+      <div class="col-xs-12 col-sm-12 col-md-2 setting-content">
         <div v-if="rect != null && rect.labels.length > 0">
           <div v-for="x, id in rect.labels" class="form-item" :id="'form-item-'+id"
                style="margin: 0 5px 5px 5px; padding: 10px; position:relative; cursor: pointer"
@@ -114,7 +117,7 @@
             </div>
             <div class="form-body">
               <div class="form-group">
-                <input type="text" class="form-control" :id="'name-'+id" v-model="rect.labels[id]['label']" v-on:keyup="hint(id)">
+                <input type="text" class="form-control pill_name" :id="'name-'+id" v-model="rect.labels[id]['label']" v-on:keyup="hint(id)">
               </div>
             </div>
           </div>
@@ -126,5 +129,5 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/draw.js') }}?v=111"></script>
-  <script src="{{ url_for('static', filename='js/update_template.js') }}?v=111"></script>
+  <script src="{{ url_for('static', filename='js/update_templatev2.js') }}?v=111"></script>
 {% endblock content %}

@@ -1,5 +1,5 @@
 myObject = new Vue({
-  el: '#annotation',
+  el: '#set_detail',
   data: {
     data: [],
     listFilter: [],
@@ -15,17 +15,7 @@ myObject = new Vue({
     files: []
   },
   beforeMount: function () {
-    this.data = localData['data'];
-    this.formats = localData.format;
-    this.pageCount = Math.ceil(localData['total'] / this.pageSize);
-    var url = window.location.href;
-    url = new URL(url);
-    var p = url.searchParams.get("page");
-    var s = url.searchParams.get("search");
-    this.search = s;
-    if (p && p != null) {
-      this.pageNo = parseInt(p);
-    }
+    this.data = localData;
   },
   mounted: function () {
     // $(".owl-carousel").owlCarousel({

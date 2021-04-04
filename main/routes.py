@@ -377,82 +377,17 @@ def search():
     if request.method == 'POST':
         data = json.loads(request.data)
         name = data.get('name')
-        pills = Pill.query.with_entities(Pill.id, Pill.pill_id, Pill.name, Pill.unit, Pill.license).filter(Pill.name.like("%{}%".format(name))).limit(15).all()
+        pills = Pill.query.with_entities(Pill.id, Pill.pill_id, Pill.name, Pill.unit).filter(Pill.name.like("%{}%".format(name))).limit(10).all()
         res = []
         for pill in pills:
             res.append({
                 'id': pill.id,
                 'pill_id': pill.pill_id,
-                'license': pill.pill_id,
                 'unit': pill.unit if pill.unit is not None and pill.unit != '' else None,
                 'name': pill.name
             })
         return jsonify({'mess': 'success', 'data': res})
     return jsonify({'mess': 'error'}), 400
-
-
-@app.route("/upload", methods=['GET', 'POST'])
-@login_required
-def upload():
-    data = {}
-    if request.method == 'POST':
-        pill = None
-        if 'id' in request.form:
-            id = request.form['id']
-            pill = Pill.query.filter_by(id=id).first()
-        elif 'pill_name' in request.form:
-            pill = Pill(name=request.form['pill_name'], created_by=current_user.id)
-            db.session.add(pill)
-            db.session.commit()
-        if pill is not None:
-            img_data = request.files.getlist('img_data[]')
-            for i, file in enumerate(img_data):
-                label = request.form['label_' + str(i)]
-                status = int(request.form['status_' + str(i)])
-                if status == 1:
-                    try:
-                        path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
-                        file.save(os.path.join(UPLOAD_DIR, path))
-                        pill_image = PillImages(pill_id=pill.id, label=label, image_url=path, created_by=current_user.id)
-                        db.session.add(pill_image)
-                    except Exception as e:
-                        print(e)
-                elif status == 2:
-                    id = int(request.form['id_' + str(i)])
-                    try:
-                        PillImages.query.filter_by(id=id).delete()
-                    except Exception as e:
-                        print(e)
-                elif status == 3:
-                    id = int(request.form['id_' + str(i)])
-                    try:
-                        pill_imgage = PillImages.query.filter_by(id=id).first()
-                        pill_imgage.label = label
-                    except Exception as e:
-                        print(e)
-            db.session.commit()
-            return jsonify({'mess': 'success'})
-    else:
-        labs = Labels.query.all()
-
-        labels = []
-        for label in labs:
-            labels.append({
-                'id': label.id,
-                'name': label.name,
-                'label': label.label
-            })
-        if 'id' in request.args:
-            id = request.args['id']
-            pill = Pill.query.filter_by(id=id).first()
-            data = {
-                'id': pill.id,
-                'pill_id': pill.pill_id,
-                'name': pill.name,
-                'images': [{'id': img.id, 'url': '/static/uploaded/' + img.image_url, 'label': img.label, 'created_by': img.created_by} for img in pill.images]
-            }
-        data['labels'] = labels
-        return render_template('upload.html', title='Upload', data=data)
 
 
 @app.route("/upload_prescription", methods=['GET', 'POST'])
@@ -496,6 +431,7 @@ def annotation():
                 cv2.imwrite(os.path.join(UPLOAD_DIR, path), img)
                 ann = Annotation(description=None, img_path=path, created_by=current_user.id)
                 db.session.add(ann)
+                print(ann)
             except Exception as e:
                 print(e)
             db.session.commit()
@@ -541,6 +477,219 @@ def annotation_data():
             'created_at': template.created_at
         }
     return render_template('update_template.html', data=res)
+
+
+# @app.route("/set", methods=['GET', 'POST'])
+# @login_required
+# def set_data():
+#     if 'id' in request.args:
+#         id = request.args['id']
+#         template = Annotation.query.filter_by(id=id).first()
+#         res = {
+#             'id': template.id,
+#             'description': template.description,
+#             'save': template.save,
+#             'img_path': template.img_path,
+#             'created_at': template.created_at
+#         }
+#     return render_template('update_template.html', data=res)
+
+
+@app.route("/upload", methods=['GET', 'POST'])
+@login_required
+def upload():
+    data = {}
+    if request.method == 'POST':
+        pill = None
+        if 'id' in request.form:
+            id = request.form['id']
+            pill = Pill.query.filter_by(id=id).first()
+        elif 'pill_name' in request.form:
+            pill = Pill(name=request.form['pill_name'], created_by=current_user.id)
+            db.session.add(pill)
+            db.session.commit()
+        if pill is not None:
+            img_data = request.files.getlist('img_data[]')
+            for i, file in enumerate(img_data):
+                label = request.form['label_' + str(i)]
+                status = int(request.form['status_' + str(i)])
+                if status == 1:
+                    try:
+                        path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
+                        file.save(os.path.join(UPLOAD_DIR, path))
+                        pill_image = PillImages(pill_id=pill.id, label=label, image_url=path, created_by=current_user.id)
+                        db.session.add(pill_image)
+                    except Exception as e:
+                        print(e)
+                elif status == 2:
+                    id = int(request.form['id_' + str(i)])
+                    try:
+                        PillImages.query.filter_by(id=id).delete()
+                    except Exception as e:
+                        print(e)
+                elif status == 3:
+                    id = int(request.form['id_' + str(i)])
+                    try:
+                        pill_imgage = PillImages.query.filter_by(id=id).first()
+                        pill_imgage.label = label
+                    except Exception as e:
+                        print(e)
+            db.session.commit()
+            return jsonify({'mess': 'success'})
+    else:
+        labs = Labels.query.all()
+        labels = []
+        for label in labs:
+            labels.append({
+                'id': label.id,
+                'name': label.name,
+                'label': label.label
+            })
+        if 'id' in request.args:
+            id = request.args['id']
+            pill = Pill.query.filter_by(id=id).first()
+            data = {
+                'id': pill.id,
+                'pill_id': pill.pill_id,
+                'name': pill.name,
+                'images': [{'id': img.id, 'url': '/static/uploaded/' + img.image_url, 'label': img.label, 'created_by': img.created_by} for img in pill.images]
+            }
+        data['labels'] = labels
+        return render_template('upload.html', title='Upload', data=data)
+
+
+@app.route("/set_register", methods=['GET', 'POST'])
+@login_required
+def set_register():
+    if request.method == 'POST':
+        setT = None
+        if 'id' in request.form:
+            id = request.form['id']
+            setT = Set.query.filter_by(id=id).first()
+        else:
+            if 'name' in request.form:
+                name = request.form['name']
+            if 'pill_name' in request.form:
+                pill_name = request.form['pill_name']
+            if 'users' in request.form:
+                users = request.form['users'].split(',')
+            main_image = request.files.get('main_image')
+            path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + main_image.filename.rsplit('.', 1)[1].lower()
+            main_image.save(os.path.join(UPLOAD_DIR, path))
+            setT = Set(name=name, pill_name=pill_name, img_path=path, created_by=current_user.id)
+            for x in users:
+                user = User.query.filter_by(id=int(x)).first()
+                print(x, user)
+                setT.users.append(user)
+            db.session.add(setT)
+            db.session.commit()
+        if setT is not None:
+            if setT.id is None:
+                setT = Set.query.filter_by(name=name, pill_name=pill_name, img_path=path, created_by=current_user.id)
+            img_data = request.files.getlist('pill_image[]')
+            for i, file in enumerate(img_data):
+                try:
+                    path = datetime.datetime.now().strftime("%Y%m%d_%H%M%S%f") + '.' + file.filename.rsplit('.', 1)[1].lower()
+                    file.save(os.path.join(UPLOAD_DIR, path))
+                    ann = Annotation(description=None, img_path=path, set_id=setT.id, created_by=current_user.id)
+                    db.session.add(ann)
+                except Exception as e:
+                    print(e)
+            db.session.commit()
+            return jsonify({'mess': 'success'})
+        return jsonify({'mess': 'failed!'}), 400
+    else:
+        res = {}
+        if 'id' in request.args:
+            id = request.args['id']
+            dataset = Set.query.filter_by(id=id).first()
+            res = {
+                'id': dataset.id,
+                'name': dataset.name,
+                'status': dataset.status,
+                'img_path': dataset.img_path,
+                'created_at': dataset.created_at
+            }
+        query = User.query.all()
+        users = []
+        for user in query:
+            users.append({
+                'id': user.id,
+                'value': user.name
+            })
+        return render_template('set_register.html', data={'users': users, 'res': res})
+
+
+@app.route("/set_manager")
+@login_required
+def set_manager():
+    pill_images = None
+    if current_user.admin == 1:
+        sets = Set.query.all()
+    else:
+        sets = Set.query.filter(Set.users.any(id=current_user.id)).all()
+    res = []
+    for se in sets:
+        anns = Annotation.query.filter_by(set_id=se.id).all()
+        status = None
+        if len(anns) > 0:
+            count = 0
+            ln = 0
+            for ann in anns:
+                ln += 1
+                if ann.save:
+                    count += 1
+            if count/ln == 0:
+                status = 'NEW'
+            elif count/ln == 1:
+                status = 'DONE'
+            else:
+                status = 'PROCESSING'
+        res.append({
+            'id': se.id,
+            'img_path': se.img_path,
+            'created_at': se.created_at,
+            'status': status,
+            'name': se.name
+        })
+    return render_template('set_manager.html', title='Annotation', data=res)
+
+@app.route("/set_detail")
+@login_required
+def set_detail():
+    res = []
+    if 'id' in request.args:
+        id = request.args['id']
+        images = User.query.join(Annotation, Annotation.created_by == User.id).add_columns(Annotation.id, Annotation.img_path, Annotation.save, Annotation.description, Annotation.set_id,
+                                                                                                         Annotation.created_at, Annotation.created_by, User.name.label('user'), User.id.label('userid')).filter_by(set_id=id).all()
+        for image in images:
+            res.append({
+                'id': image.id,
+                'img_path': image.img_path,
+                'save': image.save,
+                'created_by': image.user,
+                'created_at': image.created_at
+            })
+    return render_template('set_detail.html', title='Annotation', data=res)
+
+
+@app.route("/annotation_datav2", methods=['GET', 'POST'])
+@login_required
+def annotation_datav2():
+    if 'id' in request.args:
+        id = request.args['id']
+        template = Annotation.query.filter_by(id=id).first()
+        setT = Set.query.filter_by(id=template.set_id).first()
+        res = {
+            'id': template.id,
+            'description': template.description,
+            'save': template.save,
+            'img_path': template.img_path,
+            'created_at': template.created_at,
+            'label': setT.pill_name if setT is not None else None,
+            'main_image': setT.img_path
+        }
+    return render_template('update_templatev2.html', data=res)
 
 
 @app.route("/save_template", methods=['GET', 'POST'])

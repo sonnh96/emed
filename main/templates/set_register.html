@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+  <style type="text/css">
+    table tr td {
+      padding: 10px 15px;
+    }
+
+    .col-ls-6 {
+      width: 50%;
+    }
+    label {
+      color: black !important;
+      font-size: 18px;
+      font-weight: bold;
+      position: relative !important;
+      margin-right: 20px;
+    }
+    input {
+      margin-left: 20px;
+    }
+    .tagify {
+      font-size: 15px;
+    }
+  </style>
+  <script>
+    var localData = {{ data | tojson }};
+    localData['current_user'] = {{ current_user.id }};
+  </script>
+  <div id="set_register" class="content">
+    <div class="container">
+      <div class="card">
+        <div id="upload-content" class="card-body">
+          <input type="file" id="files" ref="files" hidden accept="image/*" multiple/>
+          <div class="preview__container">
+            <div class="header row" style="font-weight: bold; color: #086799; text-align: center">
+              <div class="row" style="margin: auto">
+                <div class="col-md-6">
+                  <button id="add" type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="save()">
+                    <i class="material-icons">save</i>
+                    <span>SAVE</span>
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <button type="button" class="btn btn-md btn-custom btn-custom--secodary__color" v-on:click="submitFiles()">
+                    <i class="material-icons">delete_outline</i>
+                    <span>DELETE</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="margin-top: 30px">
+              <div class="col-md-12">
+                <label style="font-size: 16px !important; margin-bottom: 10px; margin-top: 15px;">Set Name</label>
+                <div class="tagify">
+                  <input id="name" type="text" class="tagify__input" v-model="name" style="border: none;">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label style="font-size: 16px !important; margin-bottom: 20px; margin-bottom: 10px; margin-top: 15px;">Annotator</label>
+                <input id="user" name="tags" placeholder="select user" value="">
+              </div>
+              <div class="col-md-12">
+                <label style="font-size: 16px !important; margin-bottom: 20px; margin-bottom: 10px; margin-top: 15px;">Pill name</label>
+                <input id="pill_name" name="tags" placeholder="pill name" value="">
+              </div>
+              <div class="col-md-12">
+                <label style="font-size: 16px !important; margin-bottom: 20px; margin-bottom: 10px; margin-top: 15px;">Main image</label>
+                <input id="file_main" name="file_main" ref="file_main" v-on:change="handleUploadMain($event)" type="file" accept="image/*">
+              </div>
+              <div class="col-md-12">
+                <label style="font-size: 16px !important; margin-bottom: 20px; margin-bottom: 10px; margin-top: 15px;">Pill image</label>
+                <input id="pill_image" name="pill_image" ref="pill_image" v-on:change="handleFilesUpload($event)" type="file" accept="image/*" multiple>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/tagify.min.js') }}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url_for('static', filename='js/set_register.js') }}?v=112"></script>
+{% endblock content %}

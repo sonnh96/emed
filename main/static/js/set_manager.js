@@ -1,5 +1,5 @@
 myObject = new Vue({
-  el: '#history',
+  el: '#set_manager',
   data: {
     data: [],
     listFilter: [],
@@ -14,17 +14,7 @@ myObject = new Vue({
     filter: []
   },
   beforeMount: function () {
-    this.data = localData['data'];
-    this.formats = localData.format;
-    this.pageCount = Math.ceil(localData['total'] / this.pageSize);
-    var url = window.location.href;
-    url = new URL(url);
-    var p = url.searchParams.get("page");
-    var s = url.searchParams.get("search");
-    this.search = s;
-    if (p && p != null) {
-      this.pageNo = parseInt(p);
-    }
+    this.data = localData;
   },
   mounted: function() {
     // $(".owl-carousel").owlCarousel({

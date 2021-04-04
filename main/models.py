@@ -2,7 +2,7 @@ from datetime import datetime
 from main import db, login_manager
 from flask_login import UserMixin
 import enum
-
+from sqlalchemy.orm import relationship
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -75,7 +75,7 @@ class PillImages(db.Model):
     type = db.Column(db.Enum(Types), nullable=True, default=Types.pill)
     label = db.Column(db.String(200), nullable=True)
     image_url = db.Column(db.String(200), nullable=False)
-    created_by = db.Column(db.String(20), db.ForeignKey('user.id'), nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, nullable=True)
 
@@ -86,11 +86,32 @@ class PillImages(db.Model):
 class Annotation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(50), nullable=True)
-    img_path = db.Column(db.String(20), nullable=False)
+    img_path = db.Column(db.String(200), nullable=False)
     save = db.Column(db.Boolean, nullable=True, default=False)
+    set_id = db.Column(db.Integer, db.ForeignKey('set.id'), nullable=True)
     created_by = db.Column(db.String(20), db.ForeignKey('user.id'), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f"Labels('{self.id}', '{self.img_path}', '{self.description}', '{self.created_at}', '{self.created_by}')"
+        return f"Labels('{self.id}', '{self.img_path}', '{self.set_id}', '{self.description}', '{self.created_at}', '{self.created_by}')"
+
+user_set = db.Table('user_set',
+    db.Column('set_id', db.Integer, db.ForeignKey('set.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
+class Set(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    img_path = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.Integer, nullable=False, default=True)
+    name = db.Column(db.String(200), nullable=False)
+    pill_name = db.Column(db.String(2000), nullable=False)
+    created_by = db.Column(db.String(20), db.ForeignKey('user.id'), nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+    users = relationship("User", secondary=user_set)
+
+    def __repr__(self):
+        return f"Set('{self.id}', '{self.name}', '{self.img_path}', '{self.created_at}', '{self.created_by}')"
+
