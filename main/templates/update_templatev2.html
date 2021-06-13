@@ -108,7 +108,7 @@
       </div>
       <div class="col-xs-12 col-sm-12 col-md-2 setting-content">
         <!-- <div v-if="rect.labels.length === 0"> -->
-        <button class="btn btn-large btn-process" @click="predictLabels()">Use predictor</button>
+        <button v-if="rect != null && rect.labels.length === 0" class="btn btn-large btn-process" @click="predictLabels()">Use predictor</button>
         <!-- </div> -->
         <button class="btn btn-large btn-process" @click="removeAllLabels()">Remove all labels</button>
         <div v-if="rect != null && rect.labels.length > 0">

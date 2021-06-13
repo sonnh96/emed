@@ -87,12 +87,13 @@ myObject = new Vue({
       });
     },
     removeAllLabels() {
-      for (let id in this.rect.labels) {
-        this.rect.removeLabel(this.rect.labels[id]);
+      for (let x of this.rect.labels) {
+        this.rect.removeLabel(x);
         this.rect.canvas.renderAll();
       }
     },
     predictLabels() {
+      var self = this;
       fetch('../static/uploaded/' + this.formats['img_path'])
         .then(res => res.blob())
         .then(blob => {
@@ -111,7 +112,6 @@ myObject = new Vue({
               console.log('Success:', data['pills']);
               for (let id in data['pills']) {
                 var pill = data['pills'][id];
-                console.log(pill);
                 self.rect.addLabel(pill["x_min"], pill["y_min"], pill["x_max"]-pill["x_min"], pill["y_max"]-pill["y_min"], 0, pill['pillname'])
               }
               }
