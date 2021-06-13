@@ -23,9 +23,9 @@ myObject = new Vue({
 
     var user_tagify = new Tagify(user_input, {
       whitelist: self.users,
-      maxTags: 5,
+      maxTags: 15,
       dropdown: {
-        maxItems: 10,
+	      maxItems: 100,
         classname: "tags-look",
         enabled: 0,
         closeOnSelect: true
@@ -42,9 +42,9 @@ myObject = new Vue({
 
     var name_tagify = new Tagify(name_input, {
       whitelist: [],
-      maxTags: 10,
+      maxTags: 15,
       dropdown: {
-        maxItems: 10,
+        maxItems: 20,
         classname: "tags-look",
         enabled: 0,
         closeOnSelect: true
@@ -71,7 +71,7 @@ myObject = new Vue({
         }
       })
     }).on('add', function(e) {
-      self.names.push(e.detail.data.value)
+      self.names.push(e.detail.data.value);
     }).on('remove', function(e) {
       const index = self.names.indexOf(e.detail.data.value);
       if (index > -1) {
@@ -103,7 +103,7 @@ myObject = new Vue({
         success: function () {
           $('body').removeClass("loading");
           alert('success');
-          window.location.replace('/');
+          window.location.replace('/set_manager');
         }, error: function () {
           $('body').removeClass("loading");
         }

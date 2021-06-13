@@ -86,6 +86,39 @@ myObject = new Vue({
         }
       });
     },
+    removeAllLabels() {
+      for (let id in this.rect.labels) {
+        this.rect.removeLabel(this.rect.labels[id]);
+        this.rect.canvas.renderAll();
+      }
+    },
+    predictLabels() {
+      fetch('../static/uploaded/' + this.formats['img_path'])
+        .then(res => res.blob())
+        .then(blob => {
+            const img = new File([blob], this.formats['img_path'], {type:'image/jpeg'});
+            const formData = new FormData();
+            formData.append("file", img);
+            console.log(formData)
+            const options = {
+              method: 'POST',
+              body: formData,
+            };
+                
+            fetch('http://202.191.57.61:8081/predict_labels/', options)
+            .then(response => response.json())
+            .then(function(data) {
+              console.log('Success:', data['pills']);
+              for (let id in data['pills']) {
+                var pill = data['pills'][id];
+                console.log(pill);
+                self.rect.addLabel(pill["x_min"], pill["y_min"], pill["x_max"]-pill["x_min"], pill["y_max"]-pill["y_min"], 0, pill['pillname'])
+              }
+              }
+            )
+            .catch(error => console.log('Error:', error));
+            });
+    },
     showContent2() {
       var wi = 650;
       var h = 650;
@@ -210,7 +243,8 @@ myObject = new Vue({
       }
       xhr.onload = function () {
         // $('body').removeClass('loading');
-        window.location.replace('/annotation')
+        // window.location.replace('/annotation')
+        window.location.replace('/set_manager?id='+this.id)
       };
       $('body').addClass('loading');
       var fd = new FormData();
