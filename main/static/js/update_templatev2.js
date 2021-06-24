@@ -97,17 +97,6 @@ myObject = new Vue({
           }    
       }
     },
-    // generateOption(id){
-    //   var self = this;
-    //   select = document.getElementById("name-"+id);
-    //   $("#name-"+id).empty();
-    //   for (var i = 0; i < self.names.length; i++){
-    //     var opt = document.createElement('option');
-    //     opt.value = self.names[i];
-    //     opt.innerHTML = self.names[i];
-    //     select.appendChild(opt);
-    //   }
-    // },
     hint(id) {
       var self = this;
       $("#name-"+id).autocomplete({
@@ -145,6 +134,9 @@ myObject = new Vue({
               console.log('Success:', data['pills']);
               for (let id in data['pills']) {
                 var pill = data['pills'][id];
+                if (pill['pillname'] === "others"){
+                  pill['pillname'] = ""
+                }
                 self.rect.addLabel(pill["x_min"], pill["y_min"], pill["x_max"]-pill["x_min"], pill["y_max"]-pill["y_min"], 0, pill['pillname'])
               }
               }
@@ -264,15 +256,22 @@ myObject = new Vue({
       let data = [];
       let zoom = this.rect.getScaleSized()['scale'];
       for (let lab of this.rect.labels) {
-        let d = {
-          'x': Math.round(lab.left / zoom),
-          'y': Math.round(lab.top / zoom),
-          'w': Math.round(lab.width / zoom),
-          'h': Math.round(lab.height / zoom),
-          'a': lab.angle,
-          'label': lab.label
-        };
-        data.push(d);
+        console.log(lab.label);
+        if (lab.label){
+          let d = {
+            'x': Math.round(lab.left / zoom),
+            'y': Math.round(lab.top / zoom),
+            'w': Math.round(lab.width / zoom),
+            'h': Math.round(lab.height / zoom),
+            'a': lab.angle,
+            'label': lab.label
+          };
+          data.push(d);
+        }
+        else {
+          alert("Phai gan day du nhan!");
+          return false;
+        }
       }
       xhr.onload = function () {
         // $('body').removeClass('loading');
