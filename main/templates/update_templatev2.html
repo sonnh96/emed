@@ -138,9 +138,8 @@
             </div>
             <div class="form-body">
               <div class="form-group">
-                <input type="text" class="form-control pill_name" :id="'name-'+id" v-model="rect.labels[id]['label']" v-on:keyup="generateOption(id)">
-                  <ul id="options">
-                  </ul>
+                <input type="text" class="form-control pill_name" autocomplete="off" :id="'name-'+id" v-model="rect.labels[id]['label']" v-on:keyup="generateOption(id)">
+                  <ul id="options"></ul>
               </div>
             </div>
           </div>
@@ -153,5 +152,5 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/draw.js') }}?v=115"></script>
-  <script src="{{ url_for('static', filename='js/update_templatev2.js') }}?v=4"></script>
+  <script src="{{ url_for('static', filename='js/update_templatev2.js') }}?v=1"></script>
 {% endblock content %}

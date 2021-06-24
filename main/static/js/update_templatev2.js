@@ -3,6 +3,7 @@ myObject = new Vue({
   data: {
     list: [],
     formats: [],
+    ids_in_set: [],
     main_image: null,
     file: null,
     editedTodo: null,
@@ -19,10 +20,11 @@ myObject = new Vue({
     this.formats = localData;
     this.main_image = this.formats.main_image;
     this.names = this.formats.label ? this.formats.label.split('\t') : [];
-    console.log(this.names)
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     this.id = urlParams.get('id');
+    this.ids_in_set = this.formats.image_ids_in_set ? this.formats.image_ids_in_set.split(" ") : [];
+    console.log(this.ids_in_set);
   },
   mounted() {
     if (this.formats['img_path'] != null) {
@@ -79,21 +81,27 @@ myObject = new Vue({
       var self = this;
       input=document.getElementById('name-'+id);
       options=document.getElementById('options');
+      form_item=document.getElementById('form-item-'+id);
+      form_head=form_item.querySelector('.form-head');
       $('#options').empty();
       for(i=0;i<self.names.length;i++) {
           options.innerHTML+='<li>'+self.names[i]+'</li>';
       }
       document.body.onclick=function(event) {
-          if(event.target!=input)
+          // if(event.target!=input && event.target!=options && event.target!=form_head){
+          if(event.target!=input){
+            console.log(form_head)
             options.style.display='none';
+          }
       }
       input.onclick=function() {
-          this.value='';
-            options.style.display='block';
+        this.value = '';
+        options.style.display='block';
       }
       for(i=0;i<self.names.length;i++) {
         options.getElementsByTagName('li')[i].onclick = function(){
             input.value= this.textContent;
+            self.rect.labels[id]['label'] = this.textContent;
           }    
       }
     },
@@ -135,7 +143,10 @@ myObject = new Vue({
               for (let id in data['pills']) {
                 var pill = data['pills'][id];
                 if (pill['pillname'] === "others"){
-                  pill['pillname'] = ""
+                  pill['pillname'] = ''
+                }
+                if (!self.names.includes(pill['pillname'])){
+                  pill['pillname'] = ''
                 }
                 self.rect.addLabel(pill["x_min"], pill["y_min"], pill["x_max"]-pill["x_min"], pill["y_max"]-pill["y_min"], 0, pill['pillname'])
               }
@@ -254,9 +265,9 @@ myObject = new Vue({
     saveTemplate() {
       var xhr = new XMLHttpRequest();
       let data = [];
-      let zoom = this.rect.getScaleSized()['scale'];
-      for (let lab of this.rect.labels) {
-        console.log(lab.label);
+      var self = this;
+      let zoom = self.rect.getScaleSized()['scale'];
+      for (let lab of self.rect.labels) {
         if (lab.label){
           let d = {
             'x': Math.round(lab.left / zoom),
@@ -275,13 +286,21 @@ myObject = new Vue({
       }
       xhr.onload = function () {
         // $('body').removeClass('loading');
-        // window.location.replace('/annotation')
-        window.location.replace('/set_manager?id='+this.id)
+        next_id = parseInt(self.id) + 1;
+        console.log(next_id);
+        console.log(self.ids_in_set);
+        if (self.ids_in_set.includes(next_id.toString())){
+          window.location.replace('/annotation_datav2?id='+next_id);
+        }
+        else {
+          alert("Cam on ban da gan nhan xong bo nay!")
+          window.location.replace('/set_manager');
+        }
       };
       $('body').addClass('loading');
       var fd = new FormData();
       fd.append("data", JSON.stringify(data));
-      fd.append("id", this.id);
+      fd.append("id", self.id);
       xhr.open("POST", "/save_template", true);
       xhr.send(fd);
     },

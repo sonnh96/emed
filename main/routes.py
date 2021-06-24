@@ -666,10 +666,9 @@ def set_detail():
             res.append({
                 'id': image.id,
                 'img_path': image.img_path,
-                'save': image.save,
+                'save': "Done" if (image.save) and image.description != "[]" else "",
                 'created_by': image.user,
-                'created_at': image.created_at,
-                "status": "" if image.description == "[]" else "Done"
+                'created_at': image.created_at
             })
     return render_template('set_detail.html', title='Annotation', data=res)
 
@@ -681,19 +680,23 @@ def annotation_datav2():
         id = request.args['id']
         template = Annotation.query.filter_by(id=id).first()
         setT = Set.query.filter_by(id=template.set_id).first()
-        # drugs_name_list = setT.pill_name.split("\t") if setT is not None else []
+        images = User.query.join(Annotation, Annotation.created_by == User.id).add_columns(Annotation.id, Annotation.img_path, Annotation.save, Annotation.description, Annotation.set_id,
+                                                                                                         Annotation.created_at, Annotation.created_by, User.name.label('user'), User.id.label('userid')).filter_by(set_id=template.set_id).all()
+        image_ids_in_set = ""
+        for image in images:
+            image_ids_in_set += str(image.id) + " "
+        image_ids_in_set = image_ids_in_set.rstrip()
+
         res = {
             'id': template.id,
+            'image_ids_in_set': image_ids_in_set,
             'description': template.description,
             'save': template.save,
             'img_path': template.img_path,
             'created_at': template.created_at,
             'label': setT.pill_name if setT is not None else None,
-            # 'label': {},
             'main_image': setT.img_path
         }
-        # for index, drug_name in enumerate(drugs_name_list):
-        #     res['label']['name_{}'.format(str(index+1))] = drug_name
     return render_template('update_templatev2.html', data=res)
 
 
