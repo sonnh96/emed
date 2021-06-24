@@ -140,6 +140,7 @@
                           </label>
                         </div>
                       </th>
+                      <th class="text-center">Status</th>
                       <th class="text-center">Index</th>
                       <th class="text-center">Image</th>
                       <th class="text-center">Created by</th>
@@ -158,6 +159,11 @@
                           </span>
                           </label>
                         </div>
+                      </td>
+                      <td class=" td__content text-center">
+                        <span class="td__content-text">
+                          {% raw %}{{d.status}}{% endraw %}
+                        </span>
                       </td>
                       <td class=" td__content text-center">
                         <span class="td__content-text">
@@ -192,5 +198,5 @@
       </div>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='js/set_detail.js') }}?v=26"></script>
+  <script src="{{ url_for('static', filename='js/set_detail.js') }}?v=27"></script>
 {% endblock content %}

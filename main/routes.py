@@ -668,7 +668,8 @@ def set_detail():
                 'img_path': image.img_path,
                 'save': image.save,
                 'created_by': image.user,
-                'created_at': image.created_at
+                'created_at': image.created_at,
+                "status": "" if image.description == "[]" else "Done"
             })
     return render_template('set_detail.html', title='Annotation', data=res)
 
@@ -680,6 +681,7 @@ def annotation_datav2():
         id = request.args['id']
         template = Annotation.query.filter_by(id=id).first()
         setT = Set.query.filter_by(id=template.set_id).first()
+        # drugs_name_list = setT.pill_name.split("\t") if setT is not None else []
         res = {
             'id': template.id,
             'description': template.description,
@@ -687,8 +689,11 @@ def annotation_datav2():
             'img_path': template.img_path,
             'created_at': template.created_at,
             'label': setT.pill_name if setT is not None else None,
+            # 'label': {},
             'main_image': setT.img_path
         }
+        # for index, drug_name in enumerate(drugs_name_list):
+        #     res['label']['name_{}'.format(str(index+1))] = drug_name
     return render_template('update_templatev2.html', data=res)
 
 

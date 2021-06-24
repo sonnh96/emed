@@ -84,7 +84,6 @@ var Rectangle = (function () {
     this.image = image;
     this.scaledSize = this._getScaleImageInfo(image.width, image.height, this.canvas.width, this.canvas.height);
     console.log(this.scaledSize);
-
     this.canvas.setWidth(this.scaledSize.width);
     this.canvas.setHeight(this.scaledSize.height);
     this.canvas.calcOffset();

@@ -32,7 +32,7 @@ myObject = new Vue({
   },
   created() {
     window.onbeforeunload = function (e) {
-      return 'You sure you want to leave?';
+      return 'You sure you want to save?';
     };
   },
   methods: {
@@ -75,6 +75,39 @@ myObject = new Vue({
       $('.form-head').removeClass('active');
       $(elmnt).find('.form-head').addClass('active');
     },
+    generateOption(id){
+      var self = this;
+      input=document.getElementById('name-'+id);
+      options=document.getElementById('options');
+      $('#options').empty();
+      for(i=0;i<self.names.length;i++) {
+          options.innerHTML+='<li>'+self.names[i]+'</li>';
+      }
+      document.body.onclick=function(event) {
+          if(event.target!=input)
+            options.style.display='none';
+      }
+      input.onclick=function() {
+          this.value='';
+            options.style.display='block';
+      }
+      for(i=0;i<self.names.length;i++) {
+        options.getElementsByTagName('li')[i].onclick = function(){
+            input.value= this.textContent;
+          }    
+      }
+    },
+    // generateOption(id){
+    //   var self = this;
+    //   select = document.getElementById("name-"+id);
+    //   $("#name-"+id).empty();
+    //   for (var i = 0; i < self.names.length; i++){
+    //     var opt = document.createElement('option');
+    //     opt.value = self.names[i];
+    //     opt.innerHTML = self.names[i];
+    //     select.appendChild(opt);
+    //   }
+    // },
     hint(id) {
       var self = this;
       $("#name-"+id).autocomplete({

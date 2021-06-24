@@ -80,6 +80,25 @@
       color: red !important;
     }
 
+    #options {
+        margin:2px;
+        padding:0;
+        display:none;
+        list-style-type:none;
+        border:1px solid #666;
+        position:absolute;
+        top:30px;
+        left:0px;
+        width:100%;
+        z-index: 100000;
+    }
+    #options li {
+        background: #ffe5e5;
+        line-height:25px;
+        color:blue;
+        cursor:pointer;
+    }
+
     @media screen and (max-width: 500px) {
       body {
         overflow-y: hidden;
@@ -103,13 +122,11 @@
       <div id="main-image" class="col-md-4 col-xs-12 col-sm-12" style="margin-bottom: 15px;">
         <img :src="'/static/uploaded/' + main_image" width="90%">
       </div>
-      <div id="canvasContainer" class="col-md-6 col-xs-12 col-sm-12" style="padding: 0 20px">
+      <div id="canvasContainer" class="col-md-5 col-xs-12 col-sm-12" style="padding: 0 20px">
         <canvas id="canvas" style="border: solid 1px; margin: auto"></canvas>
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-2 setting-content">
-        <!-- <div v-if="rect.labels.length === 0"> -->
+      <div class="col-xs-12 col-sm-12 col-md-3 setting-content">
         <button v-if="rect != null && rect.labels.length === 0" class="btn btn-large btn-process" @click="predictLabels()">Use predictor</button>
-        <!-- </div> -->
         <button class="btn btn-large btn-process" @click="removeAllLabels()">Remove all labels</button>
         <div v-if="rect != null && rect.labels.length > 0">
           <div v-for="x, id in rect.labels" class="form-item" :id="'form-item-'+id"
@@ -121,7 +138,9 @@
             </div>
             <div class="form-body">
               <div class="form-group">
-                <input type="text" class="form-control pill_name" :id="'name-'+id" v-model="rect.labels[id]['label']" v-on:keyup="hint(id)">
+                <input type="text" class="form-control pill_name" :id="'name-'+id" v-model="rect.labels[id]['label']" v-on:keyup="generateOption(id)">
+                  <ul id="options">
+                  </ul>
               </div>
             </div>
           </div>
@@ -133,6 +152,6 @@
       <button class="btn btn-large btn-process" @click="saveTemplate()">Save</button>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='js/draw.js') }}?v=114"></script>
-  <script src="{{ url_for('static', filename='js/update_templatev2.js') }}?v=150"></script>
+  <script src="{{ url_for('static', filename='js/draw.js') }}?v=115"></script>
+  <script src="{{ url_for('static', filename='js/update_templatev2.js') }}?v=2"></script>
 {% endblock content %}
